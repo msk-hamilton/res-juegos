@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Qué hora es? Mañana, tarde, noche</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Lilita+One&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbf3e4; --card:#fffaf2; --ink:#2b1b3d; --muted:#6b5a70; --line:#eadbc4;
+  --rosa:#c81d6b; --rosa-soft:#fbe3ee; --mari:#f2a516; --mari-soft:#fff0cc; --turq:#0f7f80; --turq-soft:#dcf1f0;
+  --face:#ffffff; --ok:#1d7f48; --ok-soft:#e1f3e8; --no:#b4520f; --no-soft:#fdebdd; --on-accent:#fffaf2;
+  --shadow:0 2px 0 rgba(43,27,61,.06),0 10px 24px -14px rgba(43,27,61,.45);
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1c1228; --card:#271a36; --ink:#f6ecdc; --muted:#c2b1c8; --line:#3d2b50;
+  --rosa:#ff5fa2; --rosa-soft:#4a1d36; --mari:#f2a516; --mari-soft:#3e3014; --turq:#46c2c3; --turq-soft:#17393c;
+  --face:#2f2142; --ok:#62d394; --ok-soft:#163626; --no:#ffac6e; --no-soft:#3e2616; --on-accent:#1c1228;
+  --shadow:0 10px 24px -14px rgba(0,0,0,.8); color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#1c1228; --card:#271a36; --ink:#f6ecdc; --muted:#c2b1c8; --line:#3d2b50;
+  --rosa:#ff5fa2; --rosa-soft:#4a1d36; --mari:#f2a516; --mari-soft:#3e3014; --turq:#46c2c3; --turq-soft:#17393c;
+  --face:#2f2142; --ok:#62d394; --ok-soft:#163626; --no:#ffac6e; --no-soft:#3e2616; --on-accent:#1c1228;
+  --shadow:0 10px 24px -14px rgba(0,0,0,.8); color-scheme:dark;}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:18px;line-height:1.5}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:4px solid var(--mari);outline-offset:3px}
+.picado{height:52px;background:repeating-linear-gradient(90deg,var(--rosa) 0 84px,transparent 84px 96px,var(--mari) 96px 180px,transparent 180px 192px,var(--turq) 192px 276px,transparent 276px 288px,#7a3fa0 288px 372px,transparent 372px 384px);
+  -webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/14px 100%;mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/14px 100%}
+.wrap{max-width:1000px;margin:0 auto;padding:16px 18px 48px}
+header{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin:6px 0 22px}
+h1{font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400;font-size:2.4rem;line-height:1.05;margin:0}
+.sub{margin:2px 0 0;color:var(--muted);font-size:.95rem}
+nav{display:flex;gap:4px;background:var(--card);padding:5px;border-radius:16px;box-shadow:var(--shadow);flex-wrap:wrap}
+nav button{border:0;background:transparent;padding:10px 16px;border-radius:12px;font-weight:500;color:var(--muted)}
+nav button[aria-selected="true"]{background:var(--rosa);color:var(--on-accent)}
+nav small{display:block;font-size:.68rem;font-weight:400;opacity:.85;line-height:1}
+.view{display:none}.view.on{display:block}
+.card{background:var(--card);border-radius:24px;box-shadow:var(--shadow);padding:24px}
+.stage{display:grid;grid-template-columns:minmax(240px,420px) 1fr;gap:28px;align-items:center}
+@media (max-width:720px){.stage{grid-template-columns:1fr;justify-items:center;text-align:center}}
+.clock{width:100%;max-width:420px;aspect-ratio:1;display:block}
+.q{font-family:"Lilita One","Trebuchet MS",sans-serif;font-size:clamp(1.8rem,4.5vw,2.6rem);line-height:1.1;margin:0 0 14px}
+.ans{font-family:"Lilita One","Trebuchet MS",sans-serif;font-size:clamp(2.2rem,6vw,3.6rem);line-height:1.1;margin:0 0 6px;min-height:1.15em}
+.ans .hr{color:var(--rosa)}
+.digital{color:var(--muted);font-size:1.2rem;margin:0 0 18px;min-height:1.5em}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+@media (max-width:720px){.btns{justify-content:center}}
+.btn{border:2px solid var(--line);background:var(--card);padding:11px 20px;border-radius:999px;font-weight:600;min-height:48px}
+.btn:hover{border-color:var(--rosa)}
+.btn.main{background:var(--rosa);border-color:var(--rosa);color:var(--on-accent)}
+.btn.turq{background:var(--turq);border-color:var(--turq);color:var(--on-accent)}
+.en{font-weight:400;opacity:.8;font-size:.85em}
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+@media (max-width:600px){.rules{grid-template-columns:1fr}}
+.rule{border-radius:20px;padding:18px 20px;border-top:10px solid var(--mari);background:var(--card);box-shadow:var(--shadow)}
+.rule.b{border-top-color:var(--turq)}
+.rule b{font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400;font-size:1.7rem;display:block;line-height:1.15}
+.rule span{color:var(--muted);font-size:.95rem}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:6px 0 8px}
+.choice{border:3px solid var(--line);background:var(--face);border-radius:20px;padding:18px 14px;font-family:"Lilita One","Trebuchet MS",sans-serif;font-size:clamp(1.4rem,3.6vw,2rem);line-height:1.15;min-height:84px}
+.choice:hover:not(:disabled){border-color:var(--rosa)}
+.choice.ok{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.choice.no{border-color:var(--no);background:var(--no-soft);color:var(--no);opacity:.75}
+.choice.clockpick{padding:10px}
+.choice.clockpick svg{width:100%;max-width:220px;display:block;margin:0 auto}
+.choice.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@media (prefers-reduced-motion:reduce){.choice.shake{animation:none}}
+.feedback{min-height:1.6em;font-weight:600;font-size:1.1rem;margin:10px 0}
+.feedback.ok{color:var(--ok)}.feedback.no{color:var(--no)}
+.speak{display:none;margin-top:8px;background:var(--turq-soft);border-radius:18px;padding:14px 18px}
+.speak.on{display:block}
+.speak p{margin:0}
+.speak .say{font-family:"Lilita One","Trebuchet MS",sans-serif;font-size:1.7rem}
+.dots{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.dot{width:18px;height:18px;border-radius:50%;background:var(--line)}
+.dot.cur{background:var(--mari)}.dot.done{background:var(--turq)}
+.center{text-align:center}
+.start{max-width:560px;margin:0 auto;text-align:center}
+.start input{width:100%;border:2px solid var(--line);background:var(--face);border-radius:14px;padding:12px 16px;margin:10px 0 18px;font-size:1.1rem;text-align:center}
+.result{max-width:560px;margin:0 auto;text-align:center}
+.big{font-family:"Lilita One","Trebuchet MS",sans-serif;font-size:4rem;line-height:1;color:var(--rosa)}
+.stars{font-size:2rem;letter-spacing:4px}
+.gq{font-family:"Lilita One","Trebuchet MS",sans-serif;font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.15;margin:0 0 12px;text-align:center}
+.gclock{max-width:330px;margin:0 auto 14px}
+.note{color:var(--muted);font-size:.9rem}
+.dclock{width:100%;max-width:440px;border-radius:28px;background:#22152f;padding:22px 24px 18px;box-shadow:inset 0 0 0 6px #3d2b50,var(--shadow);text-align:center;color:#ffd166}
+.dclock .t{font-family:"Lexend",monospace;font-variant-numeric:tabular-nums;font-weight:600;font-size:clamp(3.4rem,11vw,5.6rem);line-height:1;letter-spacing:.02em;text-shadow:0 0 18px rgba(255,209,102,.45)}
+.dclock .ap{font-weight:600;font-size:1.3rem;margin-left:.3em;color:#ff9ec7}
+.dclock .sky{font-size:2rem;min-height:2.6rem;margin-top:6px}
+.dclock.small{padding:14px 10px 10px;border-radius:18px;box-shadow:inset 0 0 0 4px #3d2b50}
+.dclock.small .t{font-size:clamp(2rem,6vw,3rem)}
+.dclock.small .ap{font-size:1rem}
+.dclock.small .sky{font-size:1.4rem;min-height:1.8rem;margin-top:2px}
+.ctrl{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;margin:0 0 10px;max-width:360px}
+.ctrl span{text-align:center;font-weight:600}
+@media (max-width:720px){.ctrl{margin-left:auto;margin-right:auto}}
+.p-h{color:var(--rosa)}.p-m{color:var(--turq)}.p-d{color:#b36b00}
+:root[data-theme="dark"] .p-d{color:var(--mari)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .p-d{color:var(--mari)}}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.9rem;color:var(--muted);margin:0 0 16px}
+@media (max-width:720px){.legend{justify-content:center}}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:6px;vertical-align:-2px}
+.parts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px}
+@media (max-width:700px){.parts{grid-template-columns:1fr}}
+.part{border-radius:20px;padding:16px 18px;background:var(--card);box-shadow:var(--shadow);border-top:10px solid var(--mari)}
+.part:nth-child(2){border-top-color:var(--rosa)}.part:nth-child(3){border-top-color:#7a3fa0}
+.part .e{font-size:2rem}
+.part b{font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400;font-size:1.6rem;display:block;line-height:1.15}
+.part span{color:var(--muted);font-size:.95rem}
+.minirule{margin-top:16px;border-radius:20px;padding:16px 20px;background:var(--turq-soft)}
+.choice .ph{font-size:clamp(1.15rem,3vw,1.6rem)}
+.dclock .sky .hinttxt{font-size:1.05rem;font-weight:500;color:#ffd166}
+.mas{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.mcard{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:18px;display:flex;flex-direction:column;gap:12px}
+.mcard .tag{font-size:.8rem;font-weight:600;color:var(--rosa);text-transform:uppercase;letter-spacing:.06em;margin:0}
+.mcard .say{font-family:"Lilita One","Trebuchet MS",sans-serif;font-size:1.6rem;line-height:1.15;margin:0}
+.mcard .say b{font-weight:400;color:var(--turq)}
+.mcard .alt{color:var(--muted);font-size:.95rem;margin:0}
+.mcard .dclock{max-width:none}
+.mcard .dclock .sky{display:none}
+
+.choice{font-size:clamp(1.1rem,2.8vw,1.5rem);font-family:"Lexend",system-ui,sans-serif;font-weight:600}
+</style>
+</head>
+<body>
+<div class="picado" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>¿Qué hora es?</h1>
+      <p class="sub">Hours, minutes, and the time of day</p>
+    </div>
+    <nav role="tablist" aria-label="Lesson parts">
+      <button role="tab" data-view="aprender" aria-selected="true">1. Aprender<small>Presentation</small></button>
+      <button role="tab" data-view="practicar" aria-selected="false">2. Practicar<small>Practice</small></button>
+      <button role="tab" data-view="jugar" aria-selected="false">3. Jugar<small>Production</small></button>
+      <button role="tab" data-view="mas" aria-selected="false">+ Más<small>Reference</small></button>
+    </nav>
+  </header>
+
+  <section class="view on" id="v-aprender">
+    <div class="card stage">
+      <div>
+        <div id="aClock"></div>
+      </div>
+      <div>
+        <div class="ctrl"><button class="btn" id="hPrev" aria-label="Earlier hour">◀</button><span>Hora</span><button class="btn" id="hNext" aria-label="Later hour">▶</button></div>
+        <div class="ctrl"><button class="btn" id="mPrev" aria-label="Fewer minutes">◀</button><span>Minutos</span><button class="btn" id="mNext" aria-label="More minutes">▶</button></div>
+        <p class="q" style="margin-top:14px">¿Qué hora es?</p>
+        <p class="ans" id="aAns" aria-live="polite" style="font-size:clamp(1.7rem,4.4vw,2.6rem)"></p>
+        <p class="legend"><span><i style="background:var(--rosa)"></i>la hora</span><span><i style="background:var(--turq)"></i>los minutos</span><span><i style="background:var(--mari)"></i>la parte del día</span></p>
+        <div class="btns">
+          <button class="btn main" id="aShow">Mostrar <span class="en">Show</span></button>
+          <button class="btn" id="aStep">Paso a paso <span class="en">Step by step</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="parts">
+      <div class="part"><div class="e">🌅</div><b>de la mañana</b><span>6:00 to 11:59 a.&nbsp;m.<br>morning</span></div>
+      <div class="part"><div class="e">☀️</div><b>de la tarde</b><span>1:00 to 7:59 p.&nbsp;m.<br>afternoon</span></div>
+      <div class="part"><div class="e">🌙</div><b>de la noche</b><span>8:00 to 11:59 p.&nbsp;m.<br>night</span></div>
+    </div>
+    <div class="minirule"><b>Minutes:</b> say the hour, then <b>y</b>, then the minutes. <i>Son las tres <b>y diez</b>.</i> At :00, just say the hour: <i>Son las tres.</i></div>
+  </section>
+
+  <section class="view" id="v-practicar">
+    <div class="card stage">
+      <div id="prClock"></div>
+      <div>
+        <p class="q">¿Qué hora es?</p>
+        <div class="choices" id="prChoices"></div>
+        <p class="feedback" id="prFb" aria-live="polite"></p>
+        <div class="speak" id="prSpeak"><p class="en">Now say it out loud:</p><p class="say" id="prSay"></p></div>
+        <div class="btns" style="margin-top:14px">
+          <button class="btn" id="prHint">Pista <span class="en">Hint</span></button>
+          <button class="btn turq" id="prNext">Siguiente <span class="en">Next</span></button>
+        </div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:14px">Teacher tip: students tell you A or B, or type it in the chat. After the right answer, everyone says the full sentence. Pista shows the a.&nbsp;m. / p.&nbsp;m. rule.</p>
+  </section>
+
+  <section class="view" id="v-jugar">
+    <div class="card" id="game"></div>
+  </section>
+
+  <section class="view" id="v-mas">
+    <div class="card" style="margin-bottom:16px">
+      <p class="gq" style="text-align:left;margin-bottom:6px">Más expresiones</p>
+      <p style="margin:0">Extra ways to say the time, for reference. You don’t need to learn these yet. You can add <i>de la mañana</i>, <i>de la tarde</i>, or <i>de la noche</i> to the end of any of them.</p>
+    </div>
+    <div class="mas" id="masGrid"></div>
+  </section>
+</div>
+<script>
+(function(){
+const H=['','una','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez','once','doce'];
+const M={5:'cinco',10:'diez',15:'quince',20:'veinte',25:'veinticinco',30:'treinta',35:'treinta y cinco',40:'cuarenta',45:'cuarenta y cinco',50:'cincuenta',55:'cincuenta y cinco'};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const rnd=n=>Math.floor(Math.random()*n);
+const pick=a=>a[rnd(a.length)];
+// valid hour slots: 6–11 a.m., 1–11 p.m.
+const SLOTS=[...[6,7,8,9,10,11].map(h=>({h,pm:false})),...[1,2,3,4,5,6,7,8,9,10,11].map(h=>({h,pm:true}))];
+const part=t=>!t.pm?'mañana':t.h<=7?'tarde':'noche';
+const hintText=t=>!t.pm?'a.\u00a0m. = de la mañana':t.h<=7?'p.\u00a0m. 1 to 7 = de la tarde':'p.\u00a0m. 8 to 11 = de la noche';
+function words(t){
+  const lead=t.h===1?'Es la':'Son las';
+  return {lead,h:H[t.h],m:t.m?M[t.m]:'',d:'de la '+part(t)};
+}
+function phrase(t){const w=words(t);return `${w.lead} ${w.h}${w.m?' y '+w.m:''} ${w.d}.`;}
+function phraseHTML(t,step){
+  step=step==null?4:step;const w=words(t);
+  let s=`${w.lead} <span class="p-h">${w.h}</span>`;
+  if(step<2)return s+(step>=1?'':'');
+  if(w.m)s+=` y <span class="p-m">${w.m}</span>`;
+  if(step<3)return s;
+  return s+` <span class="p-d">${w.d}</span>.`;
+}
+const same=(a,b)=>a.h===b.h&&a.m===b.m&&a.pm===b.pm;
+const digits=t=>`${t.h}:${String(t.m).padStart(2,'0')}`;
+function dclock(t,showSky,small){
+  return `<div class="dclock${small?' small':''}" role="img" aria-label="Digital clock ${digits(t)} ${t.pm?'p.m.':'a.m.'}"><div class="t">${digits(t)}<span class="ap">${t.pm?'p.&nbsp;m.':'a.&nbsp;m.'}</span></div><div class="sky">${showSky?`<span class="hinttxt">${hintText(t)}</span>`:''}</div></div>`;
+}
+function randTime(){const s=pick(SLOTS);return {h:s.h,pm:s.pm,m:pick([0,5,10,15,20,25,30,35,40,45,50,55])};}
+// distractor changes ONE thing so students focus on it
+function distractor(t,kind){
+  kind=kind||pick(['d','m','h']);
+  let d;
+  for(let tries=0;tries<30;tries++){
+    if(kind==='d'){
+      const parts=['mañana','tarde','noche'].filter(p=>p!==part(t));
+      const want=pick(parts);
+      const opts=SLOTS.filter(s=>(want==='mañana'?!s.pm:s.pm&&(want==='tarde'?s.h<=7:s.h>=8)));
+      // keep same hour number when possible
+      const s=opts.find(o=>o.h===t.h)||pick(opts);
+      d={h:s.h,pm:s.pm,m:t.m};
+    }else if(kind==='m'){
+      const ms=[0,5,10,15,20,25,30,35,40,45,50,55].filter(m=>m!==t.m&&Math.abs(m-t.m)<=20);
+      d={h:t.h,pm:t.pm,m:pick(ms)};
+    }else{
+      const near=SLOTS.filter(s=>s.pm===t.pm&&s.h!==t.h&&Math.abs(s.h-t.h)<=2&&part(s)===part(t));
+      const s=near.length?pick(near):pick(SLOTS.filter(s=>!(s.h===t.h&&s.pm===t.pm)));
+      d={h:s.h,pm:s.pm,m:t.m};
+    }
+    if(!same(d,t)&&phrase(d)!==phrase(t))return d;
+  }
+  return {h:t.h===11?10:t.h+1,pm:t.pm,m:t.m};
+}
+
+/* tabs */
+const tabs=[...document.querySelectorAll('nav button')];
+function show(v){
+  if(!['aprender','practicar','jugar','mas'].includes(v))v='aprender';
+  tabs.forEach(b=>b.setAttribute('aria-selected',b.dataset.view===v));
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));
+}
+tabs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.view)));
+show((location.hash||'').slice(1));
+
+/* APRENDER */
+let aSlot=3,aM=0,aStep=-1; // -1 hidden
+function aTime(){const s=SLOTS[aSlot];return {h:s.h,pm:s.pm,m:aM};}
+function renderA(){
+  const t=aTime();
+  $('aClock').innerHTML=dclock(t,false);
+  $('aAns').innerHTML=aStep<0?'':phraseHTML(t,aStep);
+}
+const resetA=()=>{aStep=-1;renderA();};
+$('hPrev').onclick=()=>{aSlot=(aSlot+SLOTS.length-1)%SLOTS.length;resetA();};
+$('hNext').onclick=()=>{aSlot=(aSlot+1)%SLOTS.length;resetA();};
+$('mPrev').onclick=()=>{aM=(aM+55)%60;resetA();};
+$('mNext').onclick=()=>{aM=(aM+5)%60;resetA();};
+$('aShow').onclick=()=>{aStep=4;renderA();};
+$('aStep').onclick=()=>{
+  const t=aTime();
+  // steps: 1 hour, 2 minutes (skipped at :00), 3 part of day
+  if(aStep<0||aStep>=3)aStep=1;else aStep=aStep===1&&!t.m?3:aStep+1;
+  renderA();
+};
+renderA();
+
+/* PRACTICAR */
+let pr={};
+function newPr(){
+  const t=randTime(),d=distractor(t);
+  pr={t,hint:false,done:false};
+  const pair=Math.random()<.5?[t,d]:[d,t];
+  $('prChoices').innerHTML=pair.map((v,i)=>`<button class="choice" data-k="${i}"><span class="en">${'AB'[i]}</span><br><span class="ph">${phrase(v)}</span></button>`).join('');
+  pr.pair=pair;
+  $('prFb').textContent='';$('prFb').className='feedback';$('prSpeak').classList.remove('on');
+  renderPr();
+}
+function renderPr(){$('prClock').innerHTML=dclock(pr.t,pr.hint);}
+$('prChoices').addEventListener('click',e=>{
+  const b=e.target.closest('.choice');if(!b||b.disabled||pr.done)return;
+  if(same(pr.pair[+b.dataset.k],pr.t)){
+    pr.done=true;b.classList.add('ok');document.querySelectorAll('#prChoices .choice').forEach(x=>x.disabled=true);
+    $('prFb').textContent='¡Muy bien!';$('prFb').className='feedback ok';
+    $('prSay').innerHTML=phraseHTML(pr.t);$('prSpeak').classList.add('on');
+  }else{
+    b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake','no');b.disabled=true;
+    $('prFb').textContent='Casi. Check the hour, the minutes, and a. m. or p. m. Try again.';$('prFb').className='feedback no';
+    pr.hint=true;renderPr();
+  }
+});
+$('prHint').onclick=()=>{pr.hint=!pr.hint;renderPr();};
+$('prNext').onclick=newPr;
+newPr();
+
+/* JUGAR */
+const TOTAL=10;
+const G={name:'',qs:[],i:0,first:0,missed:false};
+function buildQs(){
+  const kinds=['d','d','d','m','m','h','h','d','m','h'].sort(()=>Math.random()-.5);
+  const qs=[];
+  for(let i=0;i<TOTAL;i++){
+    let t;do{t=randTime();}while(qs.some(q=>same(q.t,t)));
+    if(i===4){t={h:1,pm:true,m:pick([0,10,20,30])};} // always one "Es la una"
+    const d=distractor(t,kinds[i]);
+    qs.push({t,type:i%3===2?'clock':'phrase',pair:Math.random()<.5?[t,d]:[d,t]});
+  }
+  return qs;
+}
+const dots=()=>`<div class="dots" aria-label="Question ${G.i+1} of ${TOTAL}">`+G.qs.map((_,k)=>`<span class="dot ${k<G.i?'done':k===G.i?'cur':''}"></span>`).join('')+'</div>';
+function startScreen(){
+  let saved='';try{saved=localStorage.getItem('hora2-name')||'';}catch(e){}
+  $('game').innerHTML=`<div class="start"><p class="gq">El juego de la hora ⏰</p>
+    <p>10 questions. Pick the right answer.<br>No timer. You can always try again.</p>
+    <label for="gName"><b>Nombre</b> <span class="en">Name</span></label>
+    <input id="gName" autocomplete="off" value="${esc(saved)}" placeholder="Type your name">
+    <button class="btn main" id="gGo" style="font-size:1.2rem;padding:14px 32px">¡Vamos! <span class="en">Let’s go</span></button></div>`;
+  $('gGo').onclick=()=>{G.name=$('gName').value.trim();try{localStorage.setItem('hora2-name',G.name);}catch(e){}
+    G.qs=buildQs();G.i=0;G.first=0;question();};
+}
+function question(){
+  const q=G.qs[G.i];G.missed=false;
+  let body;
+  if(q.type==='phrase'){
+    body=`<p class="gq">¿Qué hora es?</p><div class="gclock" id="gClock" style="max-width:420px">${dclock(q.t,false)}</div>
+      <div class="choices">${q.pair.map((v,k)=>`<button class="choice" data-k="${k}"><span class="ph">${phrase(v)}</span></button>`).join('')}</div>`;
+  }else{
+    body=`<p class="gq">¿Qué reloj dice<br><span style="color:var(--rosa)">${phrase(q.t)}</span></p>
+      <div class="choices">${q.pair.map((v,k)=>`<button class="choice clockpick" data-k="${k}" aria-label="${digits(v)} ${v.pm?'p.m.':'a.m.'}">${dclock(v,false,true)}</button>`).join('')}</div>`;
+  }
+  $('game').innerHTML=dots()+body+`<p class="feedback center" id="gFb" aria-live="polite"></p><div class="btns" style="justify-content:center"><button class="btn turq" id="gNext" hidden>Siguiente <span class="en">Next</span></button></div>`;
+  $('game').querySelector('.choices').addEventListener('click',e=>{
+    const b=e.target.closest('.choice');if(!b||b.disabled)return;
+    if(same(q.pair[+b.dataset.k],q.t)){
+      if(!G.missed)G.first++;
+      b.classList.add('ok');$('game').querySelectorAll('.choice').forEach(x=>x.disabled=true);
+      $('gFb').innerHTML='¡Muy bien! '+phraseHTML(q.t);$('gFb').className='feedback center ok';
+      const n=$('gNext');n.hidden=false;n.focus();
+    }else{
+      G.missed=true;b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake','no');b.disabled=true;
+      $('gFb').textContent='Casi. Check the hour, the minutes, and a. m. or p. m. Try again.';$('gFb').className='feedback center no';
+      if(q.type==='phrase')$('gClock').innerHTML=dclock(q.t,true);
+    }
+  });
+  $('gNext').onclick=()=>{G.i++;G.i<TOTAL?question():finish();};
+}
+function finish(){
+  const s=G.first,stars=s>=9?3:s>=6?2:1;
+  $('game').innerHTML=`<div class="result"><p class="gq">¡Terminé! 🎉</p>
+    <p><b>${esc(G.name||'(no name)')}</b><br><span class="note">${new Date().toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'})}</span></p>
+    <div class="stars" aria-label="${stars} of 3 stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</div>
+    <p class="big">${s} / ${TOTAL}</p><p>correct on the first try. You finished all 10!</p>
+    <p class="note">Take a screenshot of this screen and upload it to Teams.</p>
+    <button class="btn" id="gAgain">Jugar otra vez <span class="en">Play again</span></button></div>`;
+  $('gAgain').onclick=startScreen;
+}
+const MAS=[
+  {tag:'mediodía',t:{h:12,pm:true,m:0},say:'Es <b>mediodía</b>.',alt:'Noon, 12:00 p.\u00a0m.'},
+  {tag:'medianoche',t:{h:12,pm:false,m:0},say:'Es <b>medianoche</b>.',alt:'Midnight, 12:00 a.\u00a0m.'},
+  {tag:'y media',t:{h:3,pm:true,m:30},say:'Son las tres <b>y media</b>.',alt:'Half past. Same as: Son las tres y treinta.'},
+  {tag:'y cuarto',t:{h:3,pm:true,m:15},say:'Son las tres <b>y cuarto</b>.',alt:'Quarter past. Same as: Son las tres y quince.'},
+  {tag:'menos cuarto',t:{h:3,pm:true,m:45},say:'Son las cuatro <b>menos cuarto</b>.',alt:'Quarter to. Use the NEXT hour, minus a quarter. Same as: Son las tres y cuarenta y cinco.'},
+  {tag:'menos cuarto',t:{h:12,pm:true,m:45},say:'Es la una <b>menos cuarto</b>.',alt:'12:45: the next hour is 1, so it’s es la una.'}
+];
+$('masGrid').innerHTML=MAS.map(c=>`<div class="mcard"><p class="tag">${c.tag}</p>${dclock(c.t,false,true)}<p class="say">${c.say}</p><p class="alt">${c.alt}</p></div>`).join('');
+startScreen();
+})();
+</script>
+</body>
+</html>
