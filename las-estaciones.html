@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Las cuatro estaciones</title>
+<!--
+  OPTIONAL PICTURES: the page uses emoji until you add images.
+  Put images in a folder named "img" next to this file (.webp or .png). Names:
+    Seasons:  primavera  verano  otono  invierno
+    Items:    flores  mariposa  paraguas  semillas
+              playa  gafas-de-sol  sandia  nadar
+              hojas  manzanas  bellotas  futbol-americano
+              nieve  muneco-de-nieve  bufanda  guantes
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Lilita+One&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --bg:#fbf3e4; --card:#fffaf2; --ink:#2b1b3d; --muted:#6b5a70; --line:#eadbc4;
+  --rosa:#c81d6b; --rosa-soft:#fbe3ee; --mari:#f2a516; --mari-soft:#fff0cc; --turq:#0f7f80; --turq-soft:#dcf1f0;
+  --mora:#7a3fa0; --mora-soft:#efe4f6;
+  --face:#ffffff; --ok:#1d7f48; --ok-soft:#e1f3e8; --no:#b4520f; --no-soft:#fdebdd; --on-accent:#fffaf2;
+  --shadow:0 2px 0 rgba(43,27,61,.06),0 10px 24px -14px rgba(43,27,61,.45);
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1c1228; --card:#271a36; --ink:#f6ecdc; --muted:#c2b1c8; --line:#3d2b50;
+  --rosa:#ff5fa2; --rosa-soft:#4a1d36; --mari:#f2a516; --mari-soft:#3e3014; --turq:#46c2c3; --turq-soft:#17393c;
+  --mora:#c79be6; --mora-soft:#33204a;
+  --face:#2f2142; --ok:#62d394; --ok-soft:#163626; --no:#ffac6e; --no-soft:#3e2616; --on-accent:#1c1228;
+  --shadow:0 10px 24px -14px rgba(0,0,0,.8); color-scheme:dark;}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:18px;line-height:1.5}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:4px solid var(--mari);outline-offset:3px}
+.lilita{font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400}
+.picado{height:52px;background:repeating-linear-gradient(90deg,var(--rosa) 0 84px,transparent 84px 96px,var(--mari) 96px 180px,transparent 180px 192px,var(--turq) 192px 276px,transparent 276px 288px,#7a3fa0 288px 372px,transparent 372px 384px);
+  -webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/14px 100%;mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/14px 100%}
+.wrap{max-width:1000px;margin:0 auto;padding:16px 18px 48px}
+header{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin:6px 0 22px}
+h1{font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400;font-size:2.4rem;line-height:1.05;margin:0}
+h2{font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400;font-size:1.8rem;line-height:1.1;margin:0 0 10px}
+.sub{margin:2px 0 0;color:var(--muted);font-size:.95rem}
+nav{display:flex;gap:4px;background:var(--card);padding:5px;border-radius:16px;box-shadow:var(--shadow);flex-wrap:wrap}
+nav button{border:0;background:transparent;padding:10px 16px;border-radius:12px;font-weight:500;color:var(--muted)}
+nav button[aria-selected="true"]{background:var(--rosa);color:var(--on-accent)}
+nav small{display:block;font-size:.68rem;font-weight:400;opacity:.85;line-height:1}
+.view{display:none}.view.on{display:block}
+.card{background:var(--card);border-radius:24px;box-shadow:var(--shadow);padding:24px}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{border:2px solid var(--line);background:var(--card);padding:11px 20px;border-radius:999px;font-weight:600;min-height:48px}
+.btn:hover{border-color:var(--rosa)}
+.btn.main{background:var(--rosa);border-color:var(--rosa);color:var(--on-accent)}
+.btn.turq{background:var(--turq);border-color:var(--turq);color:var(--on-accent)}
+.btn[hidden]{display:none}
+.en{font-weight:400;opacity:.8;font-size:.85em}
+.note{color:var(--muted);font-size:.9rem}
+.center{text-align:center}
+
+/* number word colors: tens = rosa, y = muted, ones = turquesa */
+.w-t{color:var(--rosa)}.w-y{color:var(--muted)}.w-u{color:var(--turq)}
+
+
+/* pictures */
+.pic{display:grid;place-items:center;width:100%;aspect-ratio:1}
+.pic img{width:100%;height:100%;object-fit:contain;display:block}
+.pic .emo{font-size:clamp(2.4rem,7vw,4.2rem);line-height:1;display:grid;place-items:center;width:86%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.55)}
+
+/* QUESTIONS */
+.prompt{font-family:"Lilita One","Trebuchet MS",sans-serif;font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.15;margin:0 0 6px;text-align:center}
+.inst{text-align:center;color:var(--muted);margin:0 0 14px}
+.qpic{max-width:230px;margin:0 auto 16px;background:linear-gradient(#bfeef0,#5cc4cf);border-radius:28px;padding:10px}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:620px;margin:0 auto 16px;background:linear-gradient(#bfeef0,#3aa9bb);border-radius:28px;padding:14px}
+.show{font-family:"Lilita One","Trebuchet MS",sans-serif;text-align:center;line-height:1.15;margin:0 auto 18px;max-width:560px;
+  background:var(--face);border-radius:24px;padding:18px 14px;box-shadow:inset 0 0 0 4px var(--line);font-size:clamp(2rem,6vw,3.2rem)}
+.listen{display:flex;flex-direction:column;align-items:center;gap:8px;margin:0 0 18px}
+.listen .btn.turq{font-size:1.3rem;padding:18px 34px}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:6px 0 8px}
+.choice{position:relative;border:3px solid var(--line);background:var(--face);border-radius:20px;padding:16px 14px;min-height:84px;
+  font-family:"Lexend",system-ui,sans-serif;font-weight:600;font-size:clamp(1.15rem,2.8vw,1.5rem);line-height:1.2;display:flex;align-items:center;gap:12px;text-align:left}
+.choice.picc{flex-direction:column;justify-content:center;padding:12px}
+.choice.picc .pic{max-width:170px;background:linear-gradient(#dff6f7,#a9e2e8);border-radius:18px}
+.choice.picc .k{position:absolute;top:10px;left:10px}
+.choice.picc .mark{position:absolute;top:8px;right:12px}
+.choice .k{flex:none;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--line);font-size:.95rem;font-weight:600;color:var(--muted)}
+.choice:hover:not(:disabled){border-color:var(--rosa)}
+.choice:disabled{cursor:default}
+.choice.ok{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.choice.no{border-color:var(--no);background:var(--no-soft);color:var(--no)}
+.choice .mark{margin-left:auto;font-size:1.3rem;font-weight:700}
+.feedback{min-height:1.6em;font-weight:600;font-size:1.1rem;margin:10px 0;text-align:center}
+.feedback.ok{color:var(--ok)}.feedback.no{color:var(--no)}
+.say{display:none;margin:8px auto 0;background:var(--turq-soft);border-radius:18px;padding:12px 18px;text-align:center;max-width:620px}
+.say.on{display:block}
+.say p{margin:0}
+.navrow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.navrow .right{display:flex;gap:10px;margin-left:auto}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:18px;height:18px;border-radius:50%;background:var(--line)}
+.dot.cur{background:var(--mari)}.dot.done{background:var(--turq)}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.count{font-weight:600;color:var(--muted)}
+.minibtn{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px;font-weight:600;font-size:.95rem;min-height:44px}
+.minibtn:hover{border-color:var(--turq)}
+
+/* START / RESULT */
+.start,.result{max-width:600px;margin:0 auto;text-align:center}
+.start input{width:100%;border:2px solid var(--line);background:var(--face);border-radius:14px;padding:12px 16px;margin:10px 0 18px;font-size:1.1rem;text-align:center}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:8px 0 6px}
+@media (max-width:560px){.modes{grid-template-columns:1fr}}
+.mode{border:3px solid var(--line);background:var(--face);border-radius:20px;padding:16px;text-align:center}
+.mode:hover{border-color:var(--rosa)}
+.mode b{font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400;font-size:1.5rem;display:block;line-height:1.15}
+.mode span{color:var(--muted);font-size:.95rem}
+.mode.full{border-color:var(--rosa)}
+.summary{background:var(--face);border-radius:20px;box-shadow:inset 0 0 0 3px var(--line);padding:16px 20px;text-align:left;margin:16px 0}
+.summary dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0}
+.summary dt{color:var(--muted)}.summary dd{margin:0;font-weight:600}
+.big{font-family:"Lilita One","Trebuchet MS",sans-serif;font-size:2.4rem;line-height:1.1;color:var(--rosa);margin:6px 0}
+#copyBox{width:100%;min-height:150px;border:2px solid var(--line);border-radius:14px;padding:12px;font:inherit;font-size:.95rem;background:var(--face);color:var(--ink);margin-top:10px}
+
+/* VOCABULARIO */
+.rulebox{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px}
+@media (max-width:760px){.rulebox{grid-template-columns:1fr}}
+.rule{border-radius:20px;padding:16px 20px;border-top:10px solid var(--rosa);background:var(--card);box-shadow:var(--shadow)}
+.rule:nth-child(2){border-top-color:var(--turq)}.rule:nth-child(3){border-top-color:var(--mari)}
+.rule .tag{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0}
+.rule b{font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400;font-size:1.5rem;display:block;line-height:1.2;margin:4px 0}
+.rule > span{color:var(--muted);font-size:.95rem}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+.vcard{border:2px solid var(--line);background:var(--face);border-radius:20px;padding:12px;text-align:center}
+.vcard:hover{border-color:var(--turq)}
+.vcard .pic{max-width:120px;margin:0 auto;background:linear-gradient(#dff6f7,#a9e2e8);border-radius:18px}
+.vcard b{display:block;font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400;font-size:1.35rem;margin-top:6px}
+.vcard span{display:block;color:var(--muted);font-size:.9rem}
+.vcard i{display:block;font-style:normal;font-size:.95rem;margin-top:4px}
+.art{color:var(--rosa)}
+dialog{border:0;border-radius:24px;padding:0;max-width:min(960px,94vw);width:100%;max-height:90vh;background:var(--bg);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+dialog::backdrop{background:rgba(28,18,40,.55)}
+.dlghead{position:sticky;top:0;background:var(--bg);display:flex;justify-content:space-between;align-items:center;padding:16px 20px;z-index:1;border-bottom:2px solid var(--line)}
+.dlgbody{padding:16px 20px 22px}
+
+/* seasons */
+.sea{border-radius:22px;color:#2b1b3d;text-align:center;padding:14px 10px;position:relative}
+.sea.primavera{background:linear-gradient(160deg,#fde3ef,#d8f1cf)}
+.sea.verano{background:linear-gradient(160deg,#fff2bf,#ffd28a)}
+.sea.otono{background:linear-gradient(160deg,#ffe2c4,#f2b27a)}
+.sea.invierno{background:linear-gradient(160deg,#eef6ff,#bcdcf2)}
+.sea .icons{display:flex;justify-content:center;gap:6px;font-size:clamp(2rem,5vw,3rem);line-height:1.1}
+.sea .icons img{width:100%;max-width:200px;aspect-ratio:4/3;object-fit:cover;border-radius:16px}
+.sea .sw{font-family:"Lilita One","Trebuchet MS",sans-serif;font-size:clamp(1.6rem,3.6vw,2.2rem);line-height:1.1;margin-top:6px}
+.sea .se{font-size:.95rem;font-weight:500;opacity:.85}
+.art{color:#c81d6b}
+.seasons4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media (max-width:860px){.seasons4{grid-template-columns:1fr 1fr}}
+button.sea{border:3px solid transparent;width:100%;font:inherit}
+button.sea:hover,button.sea:focus-visible{border-color:#2b1b3d}
+.months{font-size:.85rem;opacity:.75;margin-top:2px}
+/* items */
+.item{display:grid;place-items:center;text-align:center}
+.item .ie{font-size:clamp(3rem,9vw,4.6rem);line-height:1;display:grid;place-items:center;width:100%;aspect-ratio:1;border-radius:22px;background:var(--face);box-shadow:inset 0 0 0 3px var(--line)}
+.item .ie img{width:90%;height:90%;object-fit:contain}
+.item .il{font-weight:600;margin-top:6px}
+.qitem{max-width:200px;margin:0 auto 16px}
+.choice.itc{flex-direction:column;justify-content:center;padding:12px}
+.choice.itc .item{width:100%;max-width:150px}
+.choice.itc .ie{font-size:clamp(2.6rem,7vw,3.6rem)}
+.choice.itc .k{position:absolute;top:10px;left:10px}
+.choice.itc .mark{position:absolute;top:8px;right:12px}
+.choice.seac{padding:0;overflow:hidden;flex-direction:column;align-items:stretch}
+.choice.seac .sea{border-radius:16px;margin:0;padding:14px 10px 12px}
+.choice.seac .sea .icons{font-size:clamp(1.8rem,4.6vw,2.6rem)}
+.choice.seac .k{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.8)}
+.choice.seac .mark{position:absolute;top:8px;right:12px;background:rgba(255,255,255,.9);border-radius:50%;width:32px;height:32px;display:grid;place-items:center}
+.choice.seac.ok,.choice.seac.no{padding:4px}
+.choice .sbtn{display:flex;align-items:center;gap:10px}
+.choice .sbtn .sic{font-size:1.8rem}
+/* sorting */
+.sortcard{display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px;align-items:center}
+.sortcard > div{min-width:0}
+@media (max-width:720px){.sortcard{grid-template-columns:minmax(0,1fr)}.sortcard .item{max-width:170px;margin:0 auto}}
+.sortbtns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:480px){.sortbtns{grid-template-columns:minmax(0,1fr)}}
+.sortbtns .choice{min-height:72px}
+.bins{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+@media (max-width:860px){.bins{grid-template-columns:1fr 1fr}}
+.bin{border-radius:20px;padding:10px 12px;min-height:110px}
+.bin h3{margin:0 0 6px;font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400;font-size:1.3rem}
+.bin ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.bin li{background:rgba(255,255,255,.85);border-radius:999px;padding:2px 10px;font-size:.9rem;font-weight:500}
+.bin li span{font-size:1.1rem;margin-right:4px}
+.ella{display:flex;gap:14px;justify-content:center}
+</style>
+</head>
+<body>
+<div class="picado" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Las cuatro estaciones</h1>
+      <p class="sub">The four seasons</p>
+    </div>
+    <nav role="tablist" aria-label="Lesson parts">
+      <button role="tab" data-view="aprender" aria-selected="true">1. Aprender<small>Learn</small></button>
+      <button role="tab" data-view="clasificar" aria-selected="false">2. Clasificar<small>Sort</small></button>
+      <button role="tab" data-view="jugar" aria-selected="false">3. Jugar<small>Challenge</small></button>
+      <button role="tab" data-view="ayuda" aria-selected="false">Ayuda<small>Reference</small></button>
+    </nav>
+  </header>
+
+  <!-- APRENDER -->
+  <section class="view on" id="v-aprender">
+    <div class="seasons4" id="learnGrid"></div>
+    <div class="card" style="margin-top:16px" id="learnInfo" aria-live="polite"></div>
+    <p class="note" style="margin-top:14px">Teacher tip: tap each season and have everyone repeat it. Then ask in English: “What do you do in el verano?” and let students answer with the Spanish season word. In Florida, el invierno looks different, so it’s fine to talk about that too.</p>
+  </section>
+
+  <!-- CLASIFICAR -->
+  <section class="view" id="v-clasificar">
+    <div class="card" id="sort"></div>
+    <p class="note" style="margin-top:14px">Teacher tip: students tell you the season, or type it in the chat, before anyone taps.</p>
+  </section>
+
+  <!-- JUGAR -->
+  <section class="view" id="v-jugar">
+    <div class="card" id="game"></div>
+  </section>
+
+  <!-- AYUDA -->
+  <section class="view" id="v-ayuda">
+    <div id="helpMain"></div>
+  </section>
+</div>
+
+<dialog id="helpDlg" aria-labelledby="dlgTitle">
+  <div class="dlghead"><h2 id="dlgTitle" style="margin:0">Ayuda</h2><button class="btn" id="dlgClose">Cerrar <span class="en">Close</span></button></div>
+  <div class="dlgbody" id="helpDlgBody"></div>
+</dialog>
+
+<script>window.IMG=window.IMG||{};window.AU=window.AU||{};</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const rnd=n=>Math.floor(Math.random()*n);
+const pick=a=>a[rnd(a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;};
+
+/* ---------- data ---------- */
+const S=[
+  {id:'primavera',art:'la',w:'primavera',en:'spring',months:'March – May',emo:['🌸','🌷','🌧️']},
+  {id:'verano',art:'el',w:'verano',en:'summer',months:'June – August',emo:['☀️','🏖️','🍉']},
+  {id:'otono',art:'el',w:'otoño',en:'fall / autumn',months:'September – November',emo:['🍂','🍎','🍁']},
+  {id:'invierno',art:'el',w:'invierno',en:'winter',months:'December – February',emo:['❄️','⛄','🧣']}
+];
+const sById=id=>S.find(s=>s.id===id);
+const sName=s=>`${s.art} ${s.w}`;
+const sNameHTML=s=>`<span class="art">${s.art}</span> ${s.w}`;
+const ITEMS=[
+  {id:'flores',s:'primavera',e:'🌸',en:'flowers'},{id:'mariposa',s:'primavera',e:'🦋',en:'butterflies'},
+  {id:'paraguas',s:'primavera',e:'☔',en:'rain showers'},{id:'semillas',s:'primavera',e:'🌱',en:'planting seeds'},
+  {id:'playa',s:'verano',e:'🏖️',en:'the beach'},{id:'gafas-de-sol',s:'verano',e:'🕶️',en:'sunglasses'},
+  {id:'sandia',s:'verano',e:'🍉',en:'watermelon'},{id:'nadar',s:'verano',e:'🏊',en:'swimming'},
+  {id:'hojas',s:'otono',e:'🍂',en:'falling leaves'},{id:'manzanas',s:'otono',e:'🍎',en:'apple picking'},
+  {id:'bellotas',s:'otono',e:'🌰',en:'acorns'},{id:'futbol-americano',s:'otono',e:'🏈',en:'football season'},
+  {id:'nieve',s:'invierno',e:'❄️',en:'snow'},{id:'muneco-de-nieve',s:'invierno',e:'⛄',en:'a snowman'},
+  {id:'bufanda',s:'invierno',e:'🧣',en:'a scarf'},{id:'guantes',s:'invierno',e:'🧤',en:'gloves'}
+];
+
+/* ---------- pictures: IMG → img/<id>.webp → img/<id>.png → emoji ---------- */
+function imgTag(id){return `<img src="${window.IMG[id]||`img/${id}.webp`}" alt="" data-id="${id}" data-try="0">`;}
+document.addEventListener('error',e=>{
+  const im=e.target;if(!(im instanceof HTMLImageElement)||!im.dataset.id)return;
+  if(im.dataset.try==='0'&&!window.IMG[im.dataset.id]){im.dataset.try='1';im.src=`img/${im.dataset.id}.png`;return;}
+  const id=im.dataset.id,s=sById(id),it=ITEMS.find(x=>x.id===id);
+  if(s){const box=im.closest('.icons');if(box)box.innerHTML=s.emo.map(x=>`<span>${x}</span>`).join('');}
+  else{const sp=document.createElement('span');sp.textContent=it?it.e:'?';im.replaceWith(sp);}
+},true);
+function seaHTML(s,showName,showEn){
+  return `<div class="sea ${s.id}"><div class="icons" aria-hidden="true">${imgTag(s.id)}</div>${showName?`<div class="sw">${sNameHTML(s)}</div>`:''}${showEn?`<div class="se">${s.en}</div>`:''}</div>`;
+}
+function itemHTML(it,label){return `<div class="item"><div class="ie" aria-hidden="true">${imgTag(it.id)}</div>${label?`<div class="il">${esc(it.en)}</div>`:''}</div>`;}
+
+/* ---------- speech ---------- */
+let esVoice=null,aud=null;
+function findVoice(){try{const v=speechSynthesis.getVoices();esVoice=v.find(x=>/^es[-_](MX|US)/i.test(x.lang))||v.find(x=>/^es/i.test(x.lang))||null;}catch(e){}}
+if('speechSynthesis' in window){findVoice();speechSynthesis.addEventListener('voiceschanged',findVoice);}
+const canSpeak=()=>!!Object.keys(window.AU).length||!!esVoice;
+function speak(text){
+  try{
+    if(window.AU[text]){if(aud)aud.pause();aud=new Audio(window.AU[text]);aud.play().catch(()=>{});return;}
+    if(!esVoice)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.voice=esVoice;u.lang=esVoice.lang;u.rate=.85;speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ---------- tabs ---------- */
+const VIEWS=['aprender','clasificar','jugar','ayuda'];
+const tabs=[...document.querySelectorAll('nav button')];
+let current='aprender';
+function show(v){
+  if(!VIEWS.includes(v))v='aprender';current=v;
+  tabs.forEach(b=>b.setAttribute('aria-selected',b.dataset.view===v));
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));
+}
+tabs.forEach(b=>b.addEventListener('click',()=>{show(b.dataset.view);history.replaceState(null,'','#'+b.dataset.view);}));
+show((location.hash||'').slice(1));
+
+/* ---------- reference ---------- */
+function helpHTML(){
+  return `<div class="seasons4" style="margin-bottom:16px">${S.map(s=>`<button class="sea ${s.id}" data-say="${esc(sName(s))}" aria-label="${esc(sName(s))}, ${s.en}"><div class="icons" aria-hidden="true">${imgTag(s.id)}</div><div class="sw">${sNameHTML(s)}</div><div class="se">${s.en}</div><div class="months">${s.months}</div></button>`).join('')}</div>
+  <div class="card"><h2>El o la?</h2><p style="margin:0"><b><span class="art">la</span> primavera</b> uses <i>la</i>. The other three use <i>el</i>: <b><span class="art">el</span> verano, <span class="art">el</span> otoño, <span class="art">el</span> invierno</b>.</p>
+  <p class="note" style="margin:8px 0 0">Otoño has ñ: it sounds like “oh-TOE-nyo.” Tap a season to hear it.</p></div>`;
+}
+['helpMain','helpDlgBody'].forEach(id=>{const el=$(id);el.innerHTML=helpHTML();el.addEventListener('click',e=>{const c=e.target.closest('[data-say]');if(c)speak(c.dataset.say);});});
+const dlg=$('helpDlg');
+function openHelp(){if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');}
+$('dlgClose').onclick=()=>{if(dlg.close)dlg.close();else dlg.removeAttribute('open');};
+
+/* ---------- APRENDER ---------- */
+$('learnGrid').innerHTML=S.map(s=>`<button class="sea ${s.id}" data-id="${s.id}" aria-label="${esc(sName(s))}, ${s.en}"><div class="icons" aria-hidden="true">${imgTag(s.id)}</div><div class="sw">${sNameHTML(s)}</div><div class="se">${s.en}</div></button>`).join('');
+function learnInfo(s){
+  const el=$('learnInfo');
+  if(!s){el.innerHTML=`<p style="margin:0;text-align:center">Tap a season to see more.</p>`;return;}
+  const its=ITEMS.filter(i=>i.s===s.id);
+  el.innerHTML=`<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between">
+    <div><p class="prompt" style="text-align:left;margin:0">${sNameHTML(s)}</p><p class="note" style="margin:0">${s.en} · ${s.months}</p></div>
+    ${canSpeak()?`<button class="btn turq" id="lSay">🔊 Escuchar <span class="en">Listen</span></button>`:''}</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px">${its.map(i=>itemHTML(i,true)).join('')}</div>`;
+  const b=$('lSay');if(b)b.onclick=()=>speak(sName(s));
+}
+$('learnGrid').addEventListener('click',e=>{const b=e.target.closest('.sea');if(!b)return;const s=sById(b.dataset.id);learnInfo(s);speak(sName(s));});
+learnInfo(null);
+
+/* ---------- CLASIFICAR (sorting: one card at a time, 4 big buttons) ---------- */
+const SO={items:[],i:0,missed:false,placed:{}};
+function newSort(){
+  SO.items=shuffle(S.flatMap(s=>shuffle(ITEMS.filter(i=>i.s===s.id)).slice(0,2)));SO.i=0;SO.missed=false;SO.placed={};S.forEach(s=>SO.placed[s.id]=[]);renderSort();
+}
+function binsHTML(){return `<div class="bins">${S.map(s=>`<div class="bin sea ${s.id}" style="text-align:left"><h3>${sNameHTML(s)}</h3><ul>${SO.placed[s.id].map(i=>`<li><span aria-hidden="true">${i.e}</span>${esc(i.en)}</li>`).join('')}</ul></div>`).join('')}</div>`;}
+function renderSort(){
+  const host=$('sort');const T=SO.items.length;
+  if(SO.i>=T){
+    host.innerHTML=`<div class="result"><p class="big">¡Muy bien!</p><p>Everything is sorted. Go to <b>3. Jugar</b> when you’re ready.</p>
+      <div class="btns" style="justify-content:center"><button class="btn" id="sAgain">Otra vez <span class="en">Sort again</span></button><button class="btn main" id="sGo">3. Jugar ▶</button></div></div>${binsHTML()}`;
+    $('sAgain').onclick=newSort;$('sGo').onclick=()=>{show('jugar');history.replaceState(null,'','#jugar');};return;
+  }
+  const it=SO.items[SO.i];
+  host.innerHTML=`<div class="topline"><span class="count">${SO.i+1} de ${T}</span><button class="minibtn" data-act="help">📋 Ayuda</button></div>
+    <p class="prompt">¿En qué estación?</p><p class="inst">Which season does this go with? Pick one.</p>
+    <div class="sortcard"><div>${itemHTML(it,true)}</div>
+    <div class="sortbtns" role="group" aria-label="Seasons">${S.map((s,k)=>`<button class="choice" data-id="${s.id}" aria-label="${k+1}: ${esc(sName(s))}"><span class="k" aria-hidden="true">${k+1}</span><span class="sbtn"><span class="sic" aria-hidden="true">${s.emo[0]}</span>${sNameHTML(s)}</span></button>`).join('')}</div></div>
+    <p class="feedback" id="sFb" aria-live="polite"></p><div class="btns" style="justify-content:flex-end"><button class="btn turq" id="sNext" hidden>Siguiente <span class="en">Next</span> ▶</button></div>${binsHTML()}`;
+  $('sNext').onclick=()=>{SO.i++;renderSort();};
+  host.querySelector('[data-act="help"]').onclick=openHelp;
+  host.querySelector('.sortbtns').addEventListener('click',e=>{
+    const b=e.target.closest('.choice');if(!b||b.disabled)return;
+    if(b.dataset.id===it.s){
+      host.querySelectorAll('.sortbtns .choice').forEach(x=>x.disabled=true);
+      b.classList.add('ok');b.insertAdjacentHTML('beforeend','<span class="mark" aria-hidden="true">✓</span>');
+      $('sFb').className='feedback ok';$('sFb').innerHTML=`✓ ¡Sí! ${esc(cap(it.en))} → ${sNameHTML(sById(it.s))}`;
+      SO.placed[it.s].push(it);host.querySelector('.bins').outerHTML=binsHTML();
+      const n=$('sNext');n.hidden=false;n.focus();
+    }else{
+      b.classList.add('no');b.disabled=true;b.insertAdjacentHTML('beforeend','<span class="mark" aria-hidden="true">✗</span>');
+      $('sFb').className='feedback no';$('sFb').textContent='✗ Casi. Think about the weather in that season. Try again.';
+    }
+  });
+}
+const cap=s=>s[0].toUpperCase()+s.slice(1);
+newSort();
+
+/* ---------- question makers ---------- */
+const HINT={season:'Casi. Look at the pictures again, or open 📋 Ayuda. Try again.',
+  art:'Casi. Only la primavera uses la. Try again.',odd:'Casi. Two of these go together. Find the one that doesn’t. Try again.'};
+const othersS=(s,n)=>shuffle(S.filter(x=>x.id!==s.id)).slice(0,n);
+function mkScene2Name(s){return {prompt:'¿Qué estación es?',inst:'Which season is it? Pick the Spanish name.',top:`<div style="max-width:420px;margin:0 auto 16px">${seaHTML(s)}</div>`,
+  opts:shuffle([s,...othersS(s,2)]).map(x=>({v:x.id,label:sName(x)})),correct:s.id,hint:()=>HINT.season,say:sName(s),sayHTML:sNameHTML(s)};}
+function mkName2Scene(s){return {prompt:`¿Dónde está ${sName(s)}?`,inst:'Pick the picture.',top:`<div class="show">${sNameHTML(s)}</div>`,
+  opts:shuffle([s,...othersS(s,2)]).map(x=>({v:x.id,html:seaHTML(x),cls:'seac',lab:x.en})),correct:s.id,hint:()=>HINT.season,say:sName(s),sayHTML:sNameHTML(s)};}
+function mkItem2Season(it){const s=sById(it.s);return {prompt:'¿En qué estación?',inst:'Which season does this go with?',top:`<div class="qitem">${itemHTML(it,true)}</div>`,
+  opts:shuffle([s,...othersS(s,2)]).map(x=>({v:x.id,html:`<span class="sbtn"><span class="sic" aria-hidden="true">${x.emo[0]}</span>${sNameHTML(x)}</span>`,lab:sName(x)})),correct:s.id,hint:()=>HINT.season,say:sName(s),sayHTML:`${esc(cap(it.en))} → ${sNameHTML(s)}`};}
+function mkArt(s){return {prompt:'¿El o la?',inst:'Pick the little word that goes with this season.',top:`<div style="max-width:320px;margin:0 auto 12px">${seaHTML(s)}</div><div class="show"><span class="blank" style="display:inline-block;min-width:2em;border-bottom:5px solid var(--mari);color:var(--mari)">?</span> ${s.w}</div>`,
+  opts:[{v:'el',label:`el ${s.w}`},{v:'la',label:`la ${s.w}`}],correct:s.art,hint:()=>HINT.art,say:sName(s),sayHTML:sNameHTML(s)};}
+function mkOdd(s){
+  const two=shuffle(ITEMS.filter(i=>i.s===s.id)).slice(0,2);const odd=pick(ITEMS.filter(i=>i.s!==s.id));
+  return {prompt:`¿Qué no va con ${sName(s)}?`,inst:`Which one does NOT go with ${s.en}?`,top:`<div style="max-width:320px;margin:0 auto 16px">${seaHTML(s,true)}</div>`,
+  opts:shuffle([...two,odd]).map(x=>({v:x.id,html:itemHTML(x,true),cls:'itc',lab:x.en})),correct:odd.id,hint:()=>HINT.odd,say:sName(sById(odd.s)),sayHTML:`${esc(cap(odd.en))} → ${sNameHTML(sById(odd.s))}`};
+}
+function mkListen(s){
+  if(!canSpeak())return mkName2Scene(s);
+  return {listen:sName(s),prompt:'Escucha. ¿Qué estación es?',inst:'Press Escuchar. Listen as many times as you need. Pick the picture.',
+  opts:shuffle([s,...othersS(s,2)]).map(x=>({v:x.id,html:seaHTML(x),cls:'seac',lab:x.en})),correct:s.id,hint:()=>HINT.season,say:sName(s),sayHTML:sNameHTML(s)};
+}
+function buildGame(quick){
+  const os=shuffle(S),its=shuffle(ITEMS);let a=0,b=0;const ns=()=>os[a++%4],ni=()=>its[b++];
+  if(quick)return [mkScene2Name(ns()),mkItem2Season(ni()),mkName2Scene(ns()),mkArt(pick(S)),mkOdd(ns())];
+  const artPair=[sById('primavera'),pick(S.filter(s=>s.art==='el'))];
+  return [mkScene2Name(ns()),mkScene2Name(ns()),mkScene2Name(ns()),mkName2Scene(ns()),mkName2Scene(ns()),
+    mkItem2Season(ni()),mkItem2Season(ni()),mkItem2Season(ni()),mkArt(artPair[0]),mkArt(artPair[1]),mkOdd(ns()),mkListen(ns())];
+}
+
+/* ---------- shared renderer ---------- */
+function renderQuestion(host,q,st,o){
+  const L='ABC';
+  const opts=q.opts.map((op,i)=>{
+    const isOk=st.done&&op.v===q.correct,isNo=st.picked.includes(op.v)&&op.v!==q.correct;
+    const lab=op.lab||op.label;
+    const cls=['choice',op.cls||'',isOk?'ok':'',isNo?'no':''].join(' ');
+    const mark=isOk?'<span class="mark" aria-hidden="true">✓</span>':isNo?'<span class="mark" aria-hidden="true">✗</span>':'';
+    const sr=isOk?' (correct)':isNo?' (not correct)':'';
+    return `<button class="${cls}" data-i="${i}" ${st.done||isNo?'disabled':''} aria-label="${L[i]}: ${esc(lab)}${sr}"><span class="k" aria-hidden="true">${L[i]}</span>${op.html||`<span>${esc(op.label)}</span>`}${mark}</button>`;}).join('');
+  host.innerHTML=(o.top||'')+
+    `<p class="prompt">${esc(q.prompt)}</p><p class="inst">${q.inst}</p>`+
+    (q.listen?`<div class="listen"><button class="btn turq" data-act="listen">🔊 Escuchar <span class="en">Listen</span></button><button class="minibtn" data-act="words">Show the words</button><p class="lilita" data-role="words" hidden style="font-size:1.6rem;margin:0">${esc(q.listen)}</p></div>`:'')+
+    (q.top||'')+
+    `<div class="choices" role="group" aria-label="Answer choices">${opts}</div>`+
+    `<p class="feedback" data-role="fb" aria-live="polite"></p>`+
+    `<div class="say" data-role="say"><p class="en">Now say it out loud:</p><p class="lilita" style="font-size:1.7rem" data-role="sayw"></p>${canSpeak()?'<button class="minibtn" data-act="hear" style="margin-top:6px">🔊 Escuchar</button>':''}</div>`+
+    (o.bottom||'');
+  const fb=host.querySelector('[data-role="fb"]'),say=host.querySelector('[data-role="say"]');
+  const showDone=()=>{fb.className='feedback ok';fb.textContent='✓ ¡Muy bien!';host.querySelector('[data-role="sayw"]').innerHTML=q.sayHTML;say.classList.add('on');};
+  if(st.done)showDone();
+  host.querySelector('.choices').addEventListener('click',e=>{
+    const b=e.target.closest('.choice');if(!b||b.disabled||st.done)return;
+    const op=q.opts[+b.dataset.i];
+    if(op.v===q.correct){
+      st.done=true;host.querySelectorAll('.choice').forEach(x=>x.disabled=true);
+      b.classList.add('ok');b.insertAdjacentHTML('beforeend','<span class="mark" aria-hidden="true">✓</span>');
+      b.setAttribute('aria-label',b.getAttribute('aria-label')+' (correct)');showDone();o.onCorrect&&o.onCorrect();
+    }else{
+      st.missed=true;st.picked.push(op.v);b.classList.add('no');b.disabled=true;
+      b.insertAdjacentHTML('beforeend','<span class="mark" aria-hidden="true">✗</span>');
+      b.setAttribute('aria-label',b.getAttribute('aria-label')+' (not correct)');
+      fb.className='feedback no';fb.textContent='✗ '+q.hint(op.v);
+    }
+  });
+  const ls=host.querySelector('[data-act="listen"]');if(ls)ls.onclick=()=>speak(q.listen);
+  const ws=host.querySelector('[data-act="words"]');if(ws)ws.onclick=()=>{host.querySelector('[data-role="words"]').hidden=false;ws.hidden=true;};
+  const hr=host.querySelector('[data-act="hear"]');if(hr)hr.onclick=()=>speak(q.say);
+  const hb=host.querySelector('[data-act="help"]');if(hb)hb.onclick=openHelp;
+}
+
+/* ---------- JUGAR ---------- */
+const TITLE='Las cuatro estaciones';
+const G={name:'',quick:false,qs:[],st:[],i:0};
+function startScreen(){
+  let saved='';try{saved=localStorage.getItem('clase-nombre')||'';}catch(e){}
+  $('game').innerHTML=`<div class="start"><p class="prompt">Las cuatro estaciones 🌸☀️🍂❄️</p>
+    <p>Pick the right answer. <b>No timer.</b> You can always try again.<br>Need help? Press <b>📋 Ayuda</b> any time.</p>
+    <label for="gName"><b>Nombre</b> <span class="en">First name</span></label>
+    <input id="gName" autocomplete="off" maxlength="30" value="${esc(saved)}" placeholder="Type your first name">
+    <div class="modes">
+      <button class="mode full" data-mode="full"><b>¡Vamos!</b><span>Full challenge · 12 questions</span></button>
+      <button class="mode" data-mode="quick"><b>Repaso rápido</b><span>Quick review · 5 questions</span></button>
+    </div></div>`;
+  $('game').querySelectorAll('.mode').forEach(b=>b.onclick=()=>{
+    G.name=$('gName').value.trim();try{localStorage.setItem('clase-nombre',G.name);}catch(e){}
+    G.quick=b.dataset.mode==='quick';G.qs=buildGame(G.quick);G.st=G.qs.map(()=>({picked:[],done:false,missed:false}));G.i=0;gameQ();
+  });
+}
+function gameQ(){
+  const T=G.qs.length,st=G.st[G.i],last=G.i===T-1;
+  const dots=`<div class="dots" aria-hidden="true">${G.qs.map((_,k)=>`<span class="dot ${G.st[k].done&&k!==G.i?'done':k===G.i?'cur':''}"></span>`).join('')}</div>`;
+  renderQuestion($('game'),G.qs[G.i],st,{
+    top:`<div class="topline"><span class="count">Pregunta ${G.i+1} de ${T}</span>${dots}<button class="minibtn" data-act="help">📋 Ayuda</button></div>`,
+    bottom:`<div class="navrow"><button class="btn" id="gBack" ${G.i===0?'hidden':''}>◀ Atrás <span class="en">Back</span></button><div class="right"><button class="btn turq" id="gNext" ${st.done?'':'hidden'}>${last?'Terminar <span class="en">Finish</span>':'Siguiente <span class="en">Next</span>'} ▶</button></div></div>`,
+    onCorrect:()=>{const n=$('gNext');n.hidden=false;n.focus();}
+  });
+  $('gBack').onclick=()=>{G.i--;gameQ();};
+  $('gNext').onclick=()=>{if(last)finish();else{G.i++;gameQ();}};
+}
+function finish(){
+  const T=G.qs.length,done=G.st.filter(s=>s.done).length,first=G.st.filter(s=>s.done&&!s.missed).length;
+  const date=new Date().toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const status=done===T?'Completed':'In progress';
+  const mode=G.quick?'Quick review (5)':'Full challenge (12)';
+  const text=`${TITLE}\nName: ${G.name||'(no name)'}\nDate: ${date}\nMode: ${mode}\nQuestions completed: ${done} of ${T}\nCorrect on first try: ${first}\nStatus: ${status}`;
+  $('game').innerHTML=`<div class="result"><p class="prompt">¡Terminaste! 🌟</p>
+    <p class="big">¡Buen trabajo, ${esc(G.name||'amigo')}!</p>
+    <p>You finished all ${T} questions. You know the four seasons in Spanish.</p>
+    <div class="summary"><dl>
+      <dt>Activity</dt><dd>${esc(TITLE)}</dd>
+      <dt>Name</dt><dd>${esc(G.name||'(no name)')}</dd>
+      <dt>Date</dt><dd>${esc(date)}</dd>
+      <dt>Mode</dt><dd>${mode}</dd>
+      <dt>Completed</dt><dd>${done} of ${T} questions</dd>
+      <dt>First try</dt><dd>${first} correct on the first try</dd>
+      <dt>Status</dt><dd>${status==='Completed'?'✓ ':''}${status}</dd>
+    </dl></div>
+    <p class="note">Press <b>Copy Results</b>, then paste it into the Teams assignment or chat.</p>
+    <div class="btns" style="justify-content:center">
+      <button class="btn main" id="gCopy">📋 Copy Results</button>
+      <button class="btn" id="gReview">◀ Review my answers</button>
+      <button class="btn" id="gAgain">Practicar otra vez <span class="en">Practice again</span></button>
+    </div>
+    <p class="feedback" id="copyFb" aria-live="polite"></p>
+    <textarea id="copyBox" readonly hidden aria-label="Results text"></textarea></div>`;
+  $('gCopy').onclick=async()=>{
+    const fb=$('copyFb');
+    try{await navigator.clipboard.writeText(text);fb.className='feedback ok';fb.textContent='✓ Copied! Now paste it into Teams (Ctrl + V).';}
+    catch(e){
+      const box=$('copyBox');box.hidden=false;box.value=text;box.focus();box.select();
+      let ok=false;try{ok=document.execCommand('copy');}catch(_){}
+      fb.className='feedback '+(ok?'ok':'no');
+      fb.textContent=ok?'✓ Copied! Now paste it into Teams (Ctrl + V).':'Copy the text in the box below (Ctrl + C), then paste it into Teams.';
+    }
+  };
+  $('gReview').onclick=()=>{G.i=0;gameQ();};
+  $('gAgain').onclick=startScreen;
+}
+startScreen();
+
+document.addEventListener('keydown',e=>{
+  if(e.ctrlKey||e.metaKey||e.altKey||dlg.open)return;
+  const t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'))return;
+  const k=e.key.toLowerCase();
+  if(current==='clasificar'){const i={'1':0,'2':1,'3':2,'4':3}[k];if(i==null)return;const btn=$('sort').querySelectorAll('.sortbtns .choice')[i];if(btn&&!btn.disabled){btn.click();e.preventDefault();}return;}
+  if(current!=='jugar')return;
+  const i={'1':0,'2':1,'3':2,a:0,b:1,c:2}[k];if(i==null)return;
+  const btn=$('game').querySelectorAll('.choice')[i];if(btn&&!btn.disabled){btn.click();e.preventDefault();}
+});
+})();
+</script>
+</body>
+</html>

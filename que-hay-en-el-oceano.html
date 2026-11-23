@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Qué hay en el océano?</title>
+<!--
+  PICTURES: put your images in a folder named "img" next to this file, named exactly:
+    el-pez  el-tiburon  la-ballena  el-delfin  el-pulpo  la-medusa  la-tortuga-marina
+  (.webp or .png, for example img/el-tiburon.webp). Transparent backgrounds look best.
+  Until a picture is added, the page shows an emoji in its place.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Lilita+One&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --bg:#fbf3e4; --card:#fffaf2; --ink:#2b1b3d; --muted:#6b5a70; --line:#eadbc4;
+  --rosa:#c81d6b; --rosa-soft:#fbe3ee; --mari:#f2a516; --mari-soft:#fff0cc; --turq:#0f7f80; --turq-soft:#dcf1f0;
+  --mora:#7a3fa0; --mora-soft:#efe4f6;
+  --face:#ffffff; --ok:#1d7f48; --ok-soft:#e1f3e8; --no:#b4520f; --no-soft:#fdebdd; --on-accent:#fffaf2;
+  --shadow:0 2px 0 rgba(43,27,61,.06),0 10px 24px -14px rgba(43,27,61,.45);
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1c1228; --card:#271a36; --ink:#f6ecdc; --muted:#c2b1c8; --line:#3d2b50;
+  --rosa:#ff5fa2; --rosa-soft:#4a1d36; --mari:#f2a516; --mari-soft:#3e3014; --turq:#46c2c3; --turq-soft:#17393c;
+  --mora:#c79be6; --mora-soft:#33204a;
+  --face:#2f2142; --ok:#62d394; --ok-soft:#163626; --no:#ffac6e; --no-soft:#3e2616; --on-accent:#1c1228;
+  --shadow:0 10px 24px -14px rgba(0,0,0,.8); color-scheme:dark;}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:18px;line-height:1.5}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:4px solid var(--mari);outline-offset:3px}
+.lilita{font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400}
+.picado{height:52px;background:repeating-linear-gradient(90deg,var(--rosa) 0 84px,transparent 84px 96px,var(--mari) 96px 180px,transparent 180px 192px,var(--turq) 192px 276px,transparent 276px 288px,#7a3fa0 288px 372px,transparent 372px 384px);
+  -webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/14px 100%;mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/14px 100%}
+.wrap{max-width:1000px;margin:0 auto;padding:16px 18px 48px}
+header{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin:6px 0 22px}
+h1{font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400;font-size:2.4rem;line-height:1.05;margin:0}
+h2{font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400;font-size:1.8rem;line-height:1.1;margin:0 0 10px}
+.sub{margin:2px 0 0;color:var(--muted);font-size:.95rem}
+nav{display:flex;gap:4px;background:var(--card);padding:5px;border-radius:16px;box-shadow:var(--shadow);flex-wrap:wrap}
+nav button{border:0;background:transparent;padding:10px 16px;border-radius:12px;font-weight:500;color:var(--muted)}
+nav button[aria-selected="true"]{background:var(--rosa);color:var(--on-accent)}
+nav small{display:block;font-size:.68rem;font-weight:400;opacity:.85;line-height:1}
+.view{display:none}.view.on{display:block}
+.card{background:var(--card);border-radius:24px;box-shadow:var(--shadow);padding:24px}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{border:2px solid var(--line);background:var(--card);padding:11px 20px;border-radius:999px;font-weight:600;min-height:48px}
+.btn:hover{border-color:var(--rosa)}
+.btn.main{background:var(--rosa);border-color:var(--rosa);color:var(--on-accent)}
+.btn.turq{background:var(--turq);border-color:var(--turq);color:var(--on-accent)}
+.btn[hidden]{display:none}
+.en{font-weight:400;opacity:.8;font-size:.85em}
+.note{color:var(--muted);font-size:.9rem}
+.center{text-align:center}
+
+/* number word colors: tens = rosa, y = muted, ones = turquesa */
+.w-t{color:var(--rosa)}.w-y{color:var(--muted)}.w-u{color:var(--turq)}
+
+
+/* pictures */
+.pic{display:grid;place-items:center;width:100%;aspect-ratio:1}
+.pic img{width:100%;height:100%;object-fit:contain;display:block}
+.pic .emo{font-size:clamp(2.4rem,7vw,4.2rem);line-height:1;display:grid;place-items:center;width:86%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.55)}
+
+/* SCENE */
+.scene{position:relative;width:100%;aspect-ratio:16/10;border-radius:28px;overflow:hidden;
+  background:linear-gradient(#bfeef0 0%,#5cc4cf 28%,#1f8fa6 62%,#14607a 100%);box-shadow:var(--shadow)}
+@media (max-width:640px){.scene{aspect-ratio:4/5}}
+.scene .sand{position:absolute;left:0;right:0;bottom:0;height:15%;background:#f1d9a6;border-radius:50% 50% 0 0/30% 30% 0 0}
+.scene .weed{position:absolute;bottom:8%;width:2.2%;border-radius:999px 999px 0 0;background:#2e8a43}
+.scene .bub{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.65)}
+.scene .surface{position:absolute;top:0;left:0;right:0;height:5%;background:rgba(255,255,255,.35)}
+.animal{position:absolute;transform:translate(-50%,-50%);border:3px solid transparent;background:transparent;border-radius:24px;padding:4px;width:14%;min-width:72px;max-width:150px}
+.animal:hover,.animal:focus-visible{border-color:#fff;background:rgba(255,255,255,.18)}
+.animal.seen{border-color:rgba(255,255,255,.8);border-style:dashed}
+.animal .lab{display:none;margin-top:2px;background:rgba(255,250,242,.95);color:#2b1b3d;border-radius:999px;padding:2px 10px;font-weight:600;font-size:clamp(.8rem,1.8vw,1rem);white-space:nowrap}
+.scene.names .animal .lab{display:inline-block}
+.explore{display:grid;grid-template-columns:1fr 330px;gap:20px;align-items:start}
+@media (max-width:900px){.explore{grid-template-columns:1fr}}
+.info{text-align:center}
+.info .pic{max-width:180px;margin:0 auto 6px}
+.info .nm{font-family:"Lilita One","Trebuchet MS",sans-serif;font-size:2.2rem;line-height:1.1;margin:0}
+.info .sent{font-family:"Lilita One","Trebuchet MS",sans-serif;font-size:1.6rem;margin:10px 0;background:var(--turq-soft);border-radius:16px;padding:10px}
+.info .art{color:var(--rosa)}
+.progress{font-weight:600;color:var(--muted);margin:10px 0}
+
+/* QUESTIONS */
+.prompt{font-family:"Lilita One","Trebuchet MS",sans-serif;font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.15;margin:0 0 6px;text-align:center}
+.inst{text-align:center;color:var(--muted);margin:0 0 14px}
+.qpic{max-width:230px;margin:0 auto 16px;background:linear-gradient(#bfeef0,#5cc4cf);border-radius:28px;padding:10px}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:620px;margin:0 auto 16px;background:linear-gradient(#bfeef0,#3aa9bb);border-radius:28px;padding:14px}
+.show{font-family:"Lilita One","Trebuchet MS",sans-serif;text-align:center;line-height:1.15;margin:0 auto 18px;max-width:560px;
+  background:var(--face);border-radius:24px;padding:18px 14px;box-shadow:inset 0 0 0 4px var(--line);font-size:clamp(2rem,6vw,3.2rem)}
+.listen{display:flex;flex-direction:column;align-items:center;gap:8px;margin:0 0 18px}
+.listen .btn.turq{font-size:1.3rem;padding:18px 34px}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:6px 0 8px}
+.choice{position:relative;border:3px solid var(--line);background:var(--face);border-radius:20px;padding:16px 14px;min-height:84px;
+  font-family:"Lexend",system-ui,sans-serif;font-weight:600;font-size:clamp(1.15rem,2.8vw,1.5rem);line-height:1.2;display:flex;align-items:center;gap:12px;text-align:left}
+.choice.picc{flex-direction:column;justify-content:center;padding:12px}
+.choice.picc .pic{max-width:170px;background:linear-gradient(#dff6f7,#a9e2e8);border-radius:18px}
+.choice.picc .k{position:absolute;top:10px;left:10px}
+.choice.picc .mark{position:absolute;top:8px;right:12px}
+.choice .k{flex:none;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--line);font-size:.95rem;font-weight:600;color:var(--muted)}
+.choice:hover:not(:disabled){border-color:var(--rosa)}
+.choice:disabled{cursor:default}
+.choice.ok{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.choice.no{border-color:var(--no);background:var(--no-soft);color:var(--no)}
+.choice .mark{margin-left:auto;font-size:1.3rem;font-weight:700}
+.feedback{min-height:1.6em;font-weight:600;font-size:1.1rem;margin:10px 0;text-align:center}
+.feedback.ok{color:var(--ok)}.feedback.no{color:var(--no)}
+.say{display:none;margin:8px auto 0;background:var(--turq-soft);border-radius:18px;padding:12px 18px;text-align:center;max-width:620px}
+.say.on{display:block}
+.say p{margin:0}
+.navrow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.navrow .right{display:flex;gap:10px;margin-left:auto}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:18px;height:18px;border-radius:50%;background:var(--line)}
+.dot.cur{background:var(--mari)}.dot.done{background:var(--turq)}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.count{font-weight:600;color:var(--muted)}
+.minibtn{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px;font-weight:600;font-size:.95rem;min-height:44px}
+.minibtn:hover{border-color:var(--turq)}
+
+/* START / RESULT */
+.start,.result{max-width:600px;margin:0 auto;text-align:center}
+.start input{width:100%;border:2px solid var(--line);background:var(--face);border-radius:14px;padding:12px 16px;margin:10px 0 18px;font-size:1.1rem;text-align:center}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:8px 0 6px}
+@media (max-width:560px){.modes{grid-template-columns:1fr}}
+.mode{border:3px solid var(--line);background:var(--face);border-radius:20px;padding:16px;text-align:center}
+.mode:hover{border-color:var(--rosa)}
+.mode b{font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400;font-size:1.5rem;display:block;line-height:1.15}
+.mode span{color:var(--muted);font-size:.95rem}
+.mode.full{border-color:var(--rosa)}
+.summary{background:var(--face);border-radius:20px;box-shadow:inset 0 0 0 3px var(--line);padding:16px 20px;text-align:left;margin:16px 0}
+.summary dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0}
+.summary dt{color:var(--muted)}.summary dd{margin:0;font-weight:600}
+.big{font-family:"Lilita One","Trebuchet MS",sans-serif;font-size:2.4rem;line-height:1.1;color:var(--rosa);margin:6px 0}
+#copyBox{width:100%;min-height:150px;border:2px solid var(--line);border-radius:14px;padding:12px;font:inherit;font-size:.95rem;background:var(--face);color:var(--ink);margin-top:10px}
+
+/* VOCABULARIO */
+.rulebox{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
+@media (max-width:900px){.rulebox{grid-template-columns:1fr 1fr}}@media (max-width:560px){.rulebox{grid-template-columns:1fr}}
+.rule{border-radius:20px;padding:16px 20px;border-top:10px solid var(--rosa);background:var(--card);box-shadow:var(--shadow)}
+.rule:nth-child(2){border-top-color:var(--turq)}.rule:nth-child(3){border-top-color:var(--mari)}
+.rule .tag{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0}
+.rule b{font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400;font-size:1.5rem;display:block;line-height:1.2;margin:4px 0}
+.rule > span{color:var(--muted);font-size:.95rem}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+.vcard{border:2px solid var(--line);background:var(--face);border-radius:20px;padding:12px;text-align:center}
+.vcard:hover{border-color:var(--turq)}
+.vcard .pic{max-width:120px;margin:0 auto;background:linear-gradient(#dff6f7,#a9e2e8);border-radius:18px}
+.vcard b{display:block;font-family:"Lilita One","Trebuchet MS",sans-serif;font-weight:400;font-size:1.35rem;margin-top:6px}
+.vcard > span{display:block;color:var(--muted);font-size:.9rem}
+.vcard i{display:block;font-style:normal;font-size:.95rem;margin-top:4px}
+.art{color:var(--rosa)}
+dialog{border:0;border-radius:24px;padding:0;max-width:min(960px,94vw);width:100%;max-height:90vh;background:var(--bg);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+dialog::backdrop{background:rgba(28,18,40,.55)}
+.dlghead{position:sticky;top:0;background:var(--bg);display:flex;justify-content:space-between;align-items:center;padding:16px 20px;z-index:1;border-bottom:2px solid var(--line)}
+.dlgbody{padding:16px 20px 22px}
+</style>
+</head>
+<body>
+<div class="picado" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>¿Qué hay en el océano?</h1>
+      <p class="sub">Ocean animals and <i>hay</i> (there is / there are)</p>
+    </div>
+    <nav role="tablist" aria-label="Lesson parts">
+      <button role="tab" data-view="explorar" aria-selected="true">1. Explorar<small>Explore</small></button>
+      <button role="tab" data-view="practicar" aria-selected="false">2. Practicar<small>Practice</small></button>
+      <button role="tab" data-view="jugar" aria-selected="false">3. Jugar<small>Challenge</small></button>
+      <button role="tab" data-view="vocabulario" aria-selected="false">Vocabulario<small>Reference</small></button>
+    </nav>
+  </header>
+
+  <!-- EXPLORAR -->
+  <section class="view on" id="v-explorar">
+    <div class="explore">
+      <div>
+        <div class="scene" id="scene" aria-label="Underwater scene. Each animal is a button."></div>
+        <div class="btns" style="margin-top:14px">
+          <button class="btn" id="namesBtn" aria-pressed="false">Mostrar nombres <span class="en">Show names</span></button>
+        </div>
+      </div>
+      <div class="card info" id="info" aria-live="polite"></div>
+    </div>
+    <p class="note" style="margin-top:14px">Teacher tip: before students tap, ask “¿Qué hay en el océano?” and have them point or answer in the chat. After each tap, everyone reads the <i>Hay…</i> sentence out loud.</p>
+  </section>
+
+  <!-- PRACTICAR -->
+  <section class="view" id="v-practicar">
+    <div class="card" id="practice"></div>
+    <p class="note" style="margin-top:14px">Teacher tip: students tell you A, B, or C (or type it in the chat). After the right answer, everyone says the sentence out loud.</p>
+  </section>
+
+  <!-- JUGAR -->
+  <section class="view" id="v-jugar">
+    <div class="card" id="game"></div>
+  </section>
+
+  <!-- VOCABULARIO -->
+  <section class="view" id="v-vocabulario">
+    <div id="vocabMain"></div>
+  </section>
+</div>
+
+<dialog id="vocabDlg" aria-labelledby="dlgTitle">
+  <div class="dlghead"><h2 id="dlgTitle" style="margin:0">Vocabulario</h2><button class="btn" id="dlgClose">Cerrar <span class="en">Close</span></button></div>
+  <div class="dlgbody" id="vocabDlgBody"></div>
+</dialog>
+
+<script>
+/* Optional: embedded pictures (data URIs) and recorded audio, keyed like "el-tiburon".
+   Audio keys are the exact Spanish text, for example "el tiburón" or "Hay un tiburón." */
+window.IMG=window.IMG||{};
+window.AU=window.AU||{};
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const rnd=n=>Math.floor(Math.random()*n);
+const pick=a=>a[rnd(a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;};
+
+/* ---------- vocabulary ---------- */
+// x,y = position in the scene (percent)
+const A=[
+  {id:'el-pez',art:'el',un:'un',w:'pez',p:'peces',en:'fish',emo:'🐟',x:66,y:50},
+  {id:'el-tiburon',art:'el',un:'un',w:'tiburón',p:'tiburones',en:'shark',emo:'🦈',x:80,y:20},
+  {id:'la-ballena',art:'la',un:'una',w:'ballena',p:'ballenas',en:'whale',emo:'🐋',x:17,y:22},
+  {id:'el-delfin',art:'el',un:'un',w:'delfín',p:'delfines',en:'dolphin',emo:'🐬',x:36,y:50},
+  {id:'el-pulpo',art:'el',un:'un',w:'pulpo',p:'pulpos',en:'octopus',emo:'🐙',x:20,y:79},
+  {id:'la-medusa',art:'la',un:'una',w:'medusa',p:'medusas',en:'jellyfish',emo:'🪼',x:48,y:19},
+  {id:'la-tortuga-marina',art:'la',un:'una',w:'tortuga marina',p:'tortugas marinas',en:'sea turtle',emo:'🐢',x:80,y:79}
+];
+const byId=id=>A.find(a=>a.id===id);
+const name=a=>`${a.art} ${a.w}`;
+const nameHTML=a=>`<span class="art">${a.art}</span> ${a.w}`;
+const hay=a=>`Hay ${a.un} ${a.w}.`;
+const hayHTML=a=>`Hay <span class="art">${a.un}</span> ${a.w}.`;
+const cap=s=>s[0].toUpperCase()+s.slice(1);
+function listSentence(xs){const p=xs.map(a=>`${a.un} ${a.w}`);return `Hay ${p.slice(0,-1).join(', ')} y ${p[p.length-1]}.`;}
+
+/* ---------- pictures: embedded IMG → img/<id>.webp → img/<id>.png → emoji ---------- */
+function pic(a,alt){
+  const label=alt===false?'':` role="img" aria-label="${esc(alt||a.en)}"`;
+  const src=window.IMG[a.id]||`img/${a.id}.webp`;
+  return `<div class="pic"${label}><img src="${src}" alt="" data-id="${a.id}" data-try="0"></div>`;
+}
+document.addEventListener('error',e=>{
+  const im=e.target;if(!(im instanceof HTMLImageElement)||!im.dataset.id)return;
+  if(im.dataset.try==='0'&&!window.IMG[im.dataset.id]){im.dataset.try='1';im.src=`img/${im.dataset.id}.png`;return;}
+  const a=byId(im.dataset.id);const s=document.createElement('span');s.className='emo';s.setAttribute('aria-hidden','true');s.textContent=a?a.emo:'?';im.replaceWith(s);
+},true);
+
+/* ---------- speech: recorded audio if provided, else the browser's Spanish voice ---------- */
+let esVoice=null,aud=null;
+function findVoice(){try{const v=speechSynthesis.getVoices();esVoice=v.find(x=>/^es[-_](MX|US)/i.test(x.lang))||v.find(x=>/^es/i.test(x.lang))||null;}catch(e){}}
+if('speechSynthesis' in window){findVoice();speechSynthesis.addEventListener('voiceschanged',findVoice);}
+const canSpeak=()=>!!(window.AU&&Object.keys(window.AU).length)||!!esVoice;
+function speak(text){
+  try{
+    if(window.AU[text]){if(aud)aud.pause();aud=new Audio(window.AU[text]);aud.play().catch(()=>{});return;}
+    if(!esVoice)return;
+    speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.voice=esVoice;u.lang=esVoice.lang;u.rate=.85;speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ---------- tabs ---------- */
+const VIEWS=['explorar','practicar','jugar','vocabulario'];
+const tabs=[...document.querySelectorAll('nav button')];
+let current='explorar';
+function show(v){
+  if(!VIEWS.includes(v))v='explorar';current=v;
+  tabs.forEach(b=>b.setAttribute('aria-selected',b.dataset.view===v));
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));
+}
+tabs.forEach(b=>b.addEventListener('click',()=>{show(b.dataset.view);history.replaceState(null,'','#'+b.dataset.view);}));
+show((location.hash||'').slice(1));
+
+/* ---------- vocabulary reference ---------- */
+function vocabHTML(){
+  return `<div class="rulebox">
+    <div class="rule"><p class="tag">Hay</p><b>Hay = there is / there are</b><span>The h is silent: sounds like “eye.” <i>Hay un pez.</i> There is a fish.</span></div>
+    <div class="rule"><p class="tag">el → un</p><b><span class="art">el</span> pulpo → Hay <span class="art">un</span> pulpo.</b><span>Words with <i>el</i> use <i>un</i> (a, one).</span></div>
+    <div class="rule"><p class="tag">la → una</p><b><span class="art">la</span> medusa → Hay <span class="art">una</span> medusa.</b><span>Words with <i>la</i> use <i>una</i> (a, one).</span></div>
+    <div class="rule"><p class="tag">Más de uno</p><b>Hay dos delfin<span class="art">es</span>.</b><span>Add <i>-s</i>, or <i>-es</i> after a consonant: medusa<b style="display:inline;font:inherit;font-weight:700">s</b>, delfin<b style="display:inline;font:inherit;font-weight:700">es</b>. Special: pez → pe<b style="display:inline;font:inherit;font-weight:700">ces</b>.</span></div>
+  </div>
+  <div class="card"><div class="vgrid">${A.map(a=>`<button class="vcard" data-say="${esc(name(a))}" aria-label="${esc(name(a))}, ${a.en}">${pic(a,false)}<b>${nameHTML(a)}</b><span>${a.en}</span><i>${hayHTML(a)}</i><i style="color:var(--muted)">dos ${esc(a.p)}</i></button>`).join('')}</div>
+  <p class="note" style="margin:12px 0 0">Tap a card to hear it.</p></div>`;
+}
+['vocabMain','vocabDlgBody'].forEach(id=>{const el=$(id);el.innerHTML=vocabHTML();el.addEventListener('click',e=>{const c=e.target.closest('.vcard');if(c)speak(c.dataset.say);});});
+const dlg=$('vocabDlg');
+function openVocab(){if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');}
+$('dlgClose').onclick=()=>{if(dlg.close)dlg.close();else dlg.removeAttribute('open');};
+
+/* ---------- EXPLORAR ---------- */
+const seen=new Set();
+$('scene').innerHTML=`<div class="surface"></div>
+  ${[[8,1,9],[12,2,14],[86,3,12],[90,1,9],[60,2,10]].map(([x,w,h])=>`<div class="weed" style="left:${x}%;height:${h*1.6}%;width:${w+1.2}%"></div>`).join('')}
+  ${[[33,58,1.4],[35,52,.9],[60,62,1.1],[88,40,1.2],[90,34,.8]].map(([x,y,s])=>`<div class="bub" style="left:${x}%;top:${y}%;width:${s*1.6}%;aspect-ratio:1"></div>`).join('')}
+  <div class="sand"></div>
+  ${A.map(a=>`<button class="animal" data-id="${a.id}" style="left:${a.x}%;top:${a.y}%" aria-label="Ocean animal: ${a.en}">${pic(a,false)}<span class="lab">${esc(name(a))}</span></button>`).join('')}`;
+function renderInfo(a){
+  const el=$('info');
+  if(!a){el.innerHTML=`<p class="prompt" style="font-size:1.8rem">Tap an animal</p><p>Find all 7 animals in the ocean. Tap each one to see its name in Spanish.</p><p class="progress">${seen.size} de 7 <span class="en">found</span></p>`;return;}
+  el.innerHTML=`${pic(a)}<p class="nm">${nameHTML(a)}</p><p class="note" style="margin:0">${a.en}</p>
+    <p class="sent">${hayHTML(a)}</p>
+    ${canSpeak()?`<button class="btn turq" id="infoSay">🔊 Escuchar <span class="en">Listen</span></button>`:''}
+    <p class="progress">${seen.size} de 7 <span class="en">found</span>${seen.size===7?' ✓ ¡Todos!':''}</p>`;
+  const b=$('infoSay');if(b)b.onclick=()=>speak(hay(a));
+}
+$('scene').addEventListener('click',e=>{
+  const b=e.target.closest('.animal');if(!b)return;
+  const a=byId(b.dataset.id);seen.add(a.id);b.classList.add('seen');renderInfo(a);
+});
+$('namesBtn').onclick=()=>{const on=$('scene').classList.toggle('names');$('namesBtn').setAttribute('aria-pressed',on);
+  $('namesBtn').innerHTML=on?'Ocultar nombres <span class="en">Hide names</span>':'Mostrar nombres <span class="en">Show names</span>';};
+renderInfo(null);
+
+/* ---------- question makers ---------- */
+const others=(a,n)=>shuffle(A.filter(x=>x.id!==a.id)).slice(0,n);
+const HINT={
+  name:'Casi. Look at the picture again, or open 📋 Vocabulario. Try again.',
+  art:'Casi. Check the little word: el → un, la → una. Try again.',
+  animal:'Casi. Check the animal. Try again.',
+  yn:'Casi. Look at the three animals again. Try again.',
+  list:'Casi. Check each animal in the picture. Try again.'
+};
+// option: {v,label?,pic?}
+function mkPic2Name(a){return {prompt:'¿Qué es?',inst:'What is it? Pick the Spanish name.',top:`<div class="qpic">${pic(a)}</div>`,
+  opts:shuffle([a,...others(a,2)]).map(x=>({v:x.id,label:name(x)})),correct:a.id,hint:()=>HINT.name,say:hay(a),sayHTML:hayHTML(a)};}
+function mkName2Pic(a){return {prompt:`¿Dónde está ${name(a)}?`,inst:'Where is it? Pick the picture.',top:`<div class="show">${nameHTML(a)}</div>`,
+  opts:shuffle([a,...others(a,2)]).map(x=>({v:x.id,pic:x})),correct:a.id,hint:()=>HINT.name,say:hay(a),sayHTML:hayHTML(a)};}
+function mkSentence(a){ // un/una focus
+  const wrongArt={v:'art',label:`Hay ${a.un==='un'?'una':'un'} ${a.w}.`};
+  const o=others(a,1)[0];const wrongAnimal={v:'animal',label:hay(o)};
+  return {prompt:'¿Qué hay?',inst:'What is there? Pick the correct sentence.',top:`<div class="qpic">${pic(a)}</div>`,
+  opts:shuffle([{v:'ok',label:hay(a)},wrongArt,wrongAnimal]),correct:'ok',hint:v=>v==='art'?HINT.art:HINT.animal,say:hay(a),sayHTML:hayHTML(a)};}
+function mkYesNo(yes){
+  const three=shuffle(A).slice(0,3);const target=yes?pick(three):pick(A.filter(x=>!three.includes(x)));
+  const after=yes?`Sí, ${hay(target).toLowerCase()}`:`No. ${listSentence(three)}`;
+  return {prompt:`¿Hay ${target.un} ${target.w}?`,inst:'Look at the picture. Is there one? Pick Sí (yes) or No.',top:`<div class="trio">${three.map(x=>pic(x)).join('')}</div>`,
+  opts:[{v:'si',label:'Sí'},{v:'no',label:'No'}],correct:yes?'si':'no',hint:()=>HINT.yn,say:after,sayHTML:esc(after)};}
+function mkList(){
+  const three=shuffle(A).slice(0,3);const rest=shuffle(A.filter(x=>!three.includes(x)));
+  const swap=(i,r)=>{const c=three.slice();c[i]=r;return c;};
+  const i1=rnd(3),i2=(i1+1+rnd(2))%3;
+  return {prompt:'¿Qué hay en el océano?',inst:'Pick the sentence that matches the picture.',top:`<div class="trio">${three.map(x=>pic(x)).join('')}</div>`,
+  opts:shuffle([{v:'ok',label:listSentence(three)},{v:'a',label:listSentence(swap(i1,rest[0]))},{v:'b',label:listSentence(swap(i2,rest[1]))}]),correct:'ok',hint:()=>HINT.list,say:listSentence(three),sayHTML:esc(listSentence(three))};}
+function mkListen(a){ // falls back to name → picture without a voice
+  if(!canSpeak())return mkName2Pic(a);
+  return {listen:hay(a),prompt:'Escucha. ¿Qué hay?',inst:'Press Escuchar. Listen as many times as you need. Pick the picture.',
+  opts:shuffle([a,...others(a,2)]).map(x=>({v:x.id,pic:x})),correct:a.id,hint:()=>HINT.name,say:hay(a),sayHTML:hayHTML(a)};}
+
+const NUM=['','uno','dos','tres','cuatro'];
+function mkPlural(a,n){
+  const wrongForm={v:'form',label:`Hay ${NUM[n]} ${a.w}.`};
+  const wc=n===2?3:n-1;const wrongCount={v:'count',label:`Hay ${NUM[wc]} ${a.p}.`};
+  const ok=`Hay ${NUM[n]} ${a.p}.`;
+  const accent=/[áéíóú]/.test(a.w)&&a.p.endsWith('es')?` (${a.w} → ${a.p}: the accent goes away.)`:'';
+  return {prompt:'¿Cuántos hay?',inst:'Count the animals. Pick the sentence.',
+    top:`<div class="trio" style="grid-template-columns:repeat(${n},1fr);max-width:${n*170}px">${Array.from({length:n},()=>pic(a,false)).join('')}</div>`,
+    opts:shuffle([{v:'ok',label:ok},wrongForm,wrongCount]),correct:'ok',
+    hint:v=>v==='count'?'Casi. Count the animals again. Try again.':`Casi. More than one: ${a.p}.${accent} Try again.`,say:ok,sayHTML:`Hay <span class="art">${NUM[n]}</span> ${esc(a.p)}.`};
+}
+function buildGame(quick){
+  const order=shuffle(A);let k=0;const next=()=>order[k++%order.length];
+  if(quick)return [mkPic2Name(next()),mkName2Pic(next()),mkSentence(next()),mkYesNo(Math.random()<.5),mkList()];
+  return [mkPic2Name(next()),mkPic2Name(next()),mkName2Pic(next()),mkName2Pic(next()),
+    mkSentence(next()),mkSentence(next()),mkPlural(next(),2+rnd(3)),mkPlural(next(),2+rnd(3)),
+    mkYesNo(Math.random()<.5),mkList(),mkList(),mkListen(next())];
+}
+
+/* ---------- shared renderer ---------- */
+function renderQuestion(host,q,st,o){
+  const L='ABC';
+  const opts=q.opts.map((op,i)=>{
+    const isOk=st.done&&op.v===q.correct,isNo=st.picked.includes(op.v)&&op.v!==q.correct;
+    const lab=op.pic?op.pic.en:op.label;
+    const cls=['choice',op.pic?'picc':'',isOk?'ok':'',isNo?'no':''].join(' ');
+    const mark=isOk?'<span class="mark" aria-hidden="true">✓</span>':isNo?'<span class="mark" aria-hidden="true">✗</span>':'';
+    const sr=isOk?' (correct)':isNo?' (not correct)':'';
+    return `<button class="${cls}" data-i="${i}" ${st.done||isNo?'disabled':''} aria-label="${L[i]}: ${esc(lab)}${sr}"><span class="k" aria-hidden="true">${L[i]}</span>${op.pic?pic(op.pic,false):`<span>${esc(op.label)}</span>`}${mark}</button>`;}).join('');
+  host.innerHTML=(o.top||'')+
+    `<p class="prompt">${esc(q.prompt)}</p><p class="inst">${q.inst}</p>`+
+    (q.listen?`<div class="listen"><button class="btn turq" data-act="listen">🔊 Escuchar <span class="en">Listen</span></button><button class="minibtn" data-act="words">Show the words</button><p class="lilita" data-role="words" hidden style="font-size:1.6rem;margin:0">${esc(q.listen)}</p></div>`:'')+
+    (q.top||'')+
+    `<div class="choices" role="group" aria-label="Answer choices">${opts}</div>`+
+    `<p class="feedback" data-role="fb" aria-live="polite"></p>`+
+    `<div class="say" data-role="say"><p class="en">Now say it out loud:</p><p class="lilita" style="font-size:1.7rem" data-role="sayw"></p>${canSpeak()?'<button class="minibtn" data-act="hear" style="margin-top:6px">🔊 Escuchar</button>':''}</div>`+
+    (o.bottom||'');
+  const fb=host.querySelector('[data-role="fb"]'),say=host.querySelector('[data-role="say"]');
+  const showDone=()=>{fb.className='feedback ok';fb.textContent='✓ ¡Muy bien!';host.querySelector('[data-role="sayw"]').innerHTML=q.sayHTML;say.classList.add('on');};
+  if(st.done)showDone();
+  host.querySelector('.choices').addEventListener('click',e=>{
+    const b=e.target.closest('.choice');if(!b||b.disabled||st.done)return;
+    const op=q.opts[+b.dataset.i];
+    if(op.v===q.correct){
+      st.done=true;host.querySelectorAll('.choice').forEach(x=>x.disabled=true);
+      b.classList.add('ok');b.insertAdjacentHTML('beforeend','<span class="mark" aria-hidden="true">✓</span>');
+      b.setAttribute('aria-label',b.getAttribute('aria-label')+' (correct)');showDone();o.onCorrect&&o.onCorrect();
+    }else{
+      st.missed=true;st.picked.push(op.v);b.classList.add('no');b.disabled=true;
+      b.insertAdjacentHTML('beforeend','<span class="mark" aria-hidden="true">✗</span>');
+      b.setAttribute('aria-label',b.getAttribute('aria-label')+' (not correct)');
+      fb.className='feedback no';fb.textContent='✗ '+q.hint(op.v);
+    }
+  });
+  const ls=host.querySelector('[data-act="listen"]');if(ls)ls.onclick=()=>speak(q.listen);
+  const ws=host.querySelector('[data-act="words"]');if(ws)ws.onclick=()=>{host.querySelector('[data-role="words"]').hidden=false;ws.hidden=true;};
+  const hr=host.querySelector('[data-act="hear"]');if(hr)hr.onclick=()=>speak(q.say);
+  const vb=host.querySelector('[data-act="vocab"]');if(vb)vb.onclick=openVocab;
+}
+
+/* ---------- PRACTICAR ---------- */
+const P={qs:[],st:[],i:0};
+function newPractice(){
+  const o=shuffle(A);
+  P.qs=[mkPic2Name(o[0]),mkPic2Name(o[1]),mkName2Pic(o[2]),mkSentence(o[3]),mkYesNo(true)];
+  P.st=P.qs.map(()=>({picked:[],done:false,missed:false}));P.i=0;renderPractice();
+}
+function renderPractice(){
+  const host=$('practice');
+  if(P.i>=P.qs.length){
+    host.innerHTML=`<div class="result"><p class="big">¡Listos!</p><p>You finished the practice. Go to <b>3. Jugar</b> when you’re ready.</p>
+      <div class="btns" style="justify-content:center"><button class="btn" id="pAgain">Más práctica <span class="en">More practice</span></button><button class="btn main" id="pGo">3. Jugar ▶</button></div></div>`;
+    $('pAgain').onclick=newPractice;$('pGo').onclick=()=>{show('jugar');history.replaceState(null,'','#jugar');};return;
+  }
+  const st=P.st[P.i];
+  renderQuestion(host,P.qs[P.i],st,{
+    top:`<div class="topline"><span class="count">Práctica ${P.i+1} de ${P.qs.length}</span><button class="minibtn" data-act="vocab">📋 Vocabulario</button></div>`,
+    bottom:`<div class="navrow"><button class="btn" id="pBack" ${P.i===0?'hidden':''}>◀ Atrás <span class="en">Back</span></button><div class="right"><button class="btn turq" id="pNext" ${st.done?'':'hidden'}>Siguiente <span class="en">Next</span> ▶</button></div></div>`,
+    onCorrect:()=>{const n=$('pNext');n.hidden=false;n.focus();}
+  });
+  $('pBack').onclick=()=>{P.i--;renderPractice();};
+  $('pNext').onclick=()=>{P.i++;renderPractice();};
+}
+newPractice();
+
+/* ---------- JUGAR ---------- */
+const TITLE='¿Qué hay en el océano?: Explora el océano';
+const G={name:'',quick:false,qs:[],st:[],i:0};
+function startScreen(){
+  let saved='';try{saved=localStorage.getItem('clase-nombre')||'';}catch(e){}
+  $('game').innerHTML=`<div class="start"><p class="prompt">Explora el océano 🌊</p>
+    <p>Pick the right answer. <b>No timer.</b> You can always try again.<br>Need help? Press <b>📋 Vocabulario</b> any time.</p>
+    <label for="gName"><b>Nombre</b> <span class="en">First name</span></label>
+    <input id="gName" autocomplete="off" maxlength="30" value="${esc(saved)}" placeholder="Type your first name">
+    <div class="modes">
+      <button class="mode full" data-mode="full"><b>¡Vamos!</b><span>Full challenge · 12 questions</span></button>
+      <button class="mode" data-mode="quick"><b>Repaso rápido</b><span>Quick review · 5 questions</span></button>
+    </div></div>`;
+  $('game').querySelectorAll('.mode').forEach(b=>b.onclick=()=>{
+    G.name=$('gName').value.trim();try{localStorage.setItem('clase-nombre',G.name);}catch(e){}
+    G.quick=b.dataset.mode==='quick';G.qs=buildGame(G.quick);G.st=G.qs.map(()=>({picked:[],done:false,missed:false}));G.i=0;gameQ();
+  });
+}
+function gameQ(){
+  const T=G.qs.length,st=G.st[G.i],last=G.i===T-1;
+  const dots=`<div class="dots" aria-hidden="true">${G.qs.map((_,k)=>`<span class="dot ${G.st[k].done&&k!==G.i?'done':k===G.i?'cur':''}"></span>`).join('')}</div>`;
+  renderQuestion($('game'),G.qs[G.i],st,{
+    top:`<div class="topline"><span class="count">Pregunta ${G.i+1} de ${T}</span>${dots}<button class="minibtn" data-act="vocab">📋 Vocabulario</button></div>`,
+    bottom:`<div class="navrow"><button class="btn" id="gBack" ${G.i===0?'hidden':''}>◀ Atrás <span class="en">Back</span></button><div class="right"><button class="btn turq" id="gNext" ${st.done?'':'hidden'}>${last?'Terminar <span class="en">Finish</span>':'Siguiente <span class="en">Next</span>'} ▶</button></div></div>`,
+    onCorrect:()=>{const n=$('gNext');n.hidden=false;n.focus();}
+  });
+  $('gBack').onclick=()=>{G.i--;gameQ();};
+  $('gNext').onclick=()=>{if(last)finish();else{G.i++;gameQ();}};
+}
+function finish(){
+  const T=G.qs.length,done=G.st.filter(s=>s.done).length,first=G.st.filter(s=>s.done&&!s.missed).length;
+  const date=new Date().toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const status=done===T?'Completed':'In progress';
+  const mode=G.quick?'Quick review (5)':'Full challenge (12)';
+  const text=`${TITLE}\nName: ${G.name||'(no name)'}\nDate: ${date}\nMode: ${mode}\nQuestions completed: ${done} of ${T}\nCorrect on first try: ${first}\nStatus: ${status}`;
+  $('game').innerHTML=`<div class="result"><p class="prompt">¡Terminaste! 🌟</p>
+    <p class="big">¡Buen trabajo, ${esc(G.name||'amigo')}!</p>
+    <p>You finished all ${T} questions. You can name the animals in the ocean in Spanish.</p>
+    <div class="summary"><dl>
+      <dt>Activity</dt><dd>${esc(TITLE)}</dd>
+      <dt>Name</dt><dd>${esc(G.name||'(no name)')}</dd>
+      <dt>Date</dt><dd>${esc(date)}</dd>
+      <dt>Mode</dt><dd>${mode}</dd>
+      <dt>Completed</dt><dd>${done} of ${T} questions</dd>
+      <dt>First try</dt><dd>${first} correct on the first try</dd>
+      <dt>Status</dt><dd>${status==='Completed'?'✓ ':''}${status}</dd>
+    </dl></div>
+    <p class="note">Press <b>Copy Results</b>, then paste it into the Teams assignment or chat.</p>
+    <div class="btns" style="justify-content:center">
+      <button class="btn main" id="gCopy">📋 Copy Results</button>
+      <button class="btn" id="gReview">◀ Review my answers</button>
+      <button class="btn" id="gAgain">Practicar otra vez <span class="en">Practice again</span></button>
+    </div>
+    <p class="feedback" id="copyFb" aria-live="polite"></p>
+    <textarea id="copyBox" readonly hidden aria-label="Results text"></textarea></div>`;
+  $('gCopy').onclick=async()=>{
+    const fb=$('copyFb');
+    try{await navigator.clipboard.writeText(text);fb.className='feedback ok';fb.textContent='✓ Copied! Now paste it into Teams (Ctrl + V).';}
+    catch(e){
+      const box=$('copyBox');box.hidden=false;box.value=text;box.focus();box.select();
+      let ok=false;try{ok=document.execCommand('copy');}catch(_){}
+      fb.className='feedback '+(ok?'ok':'no');
+      fb.textContent=ok?'✓ Copied! Now paste it into Teams (Ctrl + V).':'Copy the text in the box below (Ctrl + C), then paste it into Teams.';
+    }
+  };
+  $('gReview').onclick=()=>{G.i=0;gameQ();};
+  $('gAgain').onclick=startScreen;
+}
+startScreen();
+
+/* ---------- keyboard: 1/2/3 or A/B/C pick an answer ---------- */
+document.addEventListener('keydown',e=>{
+  if(e.ctrlKey||e.metaKey||e.altKey||dlg.open)return;
+  const t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'))return;
+  const i={'1':0,'2':1,'3':2,a:0,b:1,c:2}[e.key.toLowerCase()];if(i==null)return;
+  const host=current==='practicar'?$('practice'):current==='jugar'?$('game'):null;if(!host)return;
+  const btn=host.querySelectorAll('.choice')[i];if(btn&&!btn.disabled){btn.click();e.preventDefault();}
+});
+})();
+</script>
+</body>
+</html>
